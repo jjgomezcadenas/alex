@@ -25,14 +25,16 @@ int main(int argc, char **argv)
   //cout << "argc = " << argc << endl;
   //cout << "argv[0] = " << argv[1] << endl;
 
-  if( argc != 3)   
+  if( argc != 4)   
   { 
-    cout <<" Usage: xConfigure <DEBUG> <pathToAlgos>" << endl;
+    cout <<" Usage: xConfigure <debugLevel> <pathToXml> <pathToSrc>" << endl;
     return -1;
   }
 
   string debugLevel;
   string pathToAlgos;
+  string pathToXml;
+
   {
     stringstream ss;
     ss << argv[1];
@@ -41,6 +43,11 @@ int main(int argc, char **argv)
   {
     stringstream ss;
     ss << argv[2];
+    ss>>pathToXml;
+  }
+  {
+    stringstream ss;
+    ss << argv[3];
     ss>>pathToAlgos;
   }
 
@@ -51,7 +58,11 @@ int main(int argc, char **argv)
   AlexConfigure::Instance().Init(debugLevel);
 
   klog << log4cpp::Priority::INFO 
-        << " xConfigure: path to Algos=" << pathToAlgos;
+        << " xConfigure: path to Algos (src)=" << pathToAlgos;
+
+  klog << log4cpp::Priority::INFO 
+        << " xConfigure: path to xml =" << pathToXml;
+  
   
 	//Define files
 	
@@ -66,9 +77,9 @@ int main(int argc, char **argv)
 	string algoHeader="AlgoHeaders.hh";
   
   
-  string pathAlexConf = PathFromStrings(pathToAlgos,alexConf);
+  string pathAlexConf = PathFromStrings(pathToXml,alexConf);
   klog << log4cpp::Priority::INFO 
-        << " Parse AlexConfig file located at=" << pathAlexConf;
+        << " Parse Alex xml configuration files located at=" << pathAlexConf;
 
 	AlexConfigure::Instance().ParseConfiguration(pathAlexConf);
 	
@@ -76,10 +87,12 @@ int main(int argc, char **argv)
   	string pathAConfHeader = PathFromStrings(pathToAlgos,aConfHeader);
   	klog << log4cpp::Priority::INFO 
     	    << " Write AConf header file at=" << pathAConfHeader;
+
 		std::ofstream out(pathAConfHeader.c_str());
   	out << AlexConfigure::Instance().WriteAConfHeader();
   	out.close();
 	}
+  
 	{
   	string pathAConfCpp = PathFromStrings(pathToAlgos,aConfCpp);
   	klog << log4cpp::Priority::INFO 

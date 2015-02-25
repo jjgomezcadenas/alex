@@ -62,7 +62,6 @@ class AlexConf {
 
 		tinyxml2::XMLDocument fDoc;
 
-		std::string fDebugLevel;
 		std::pair<std::string,std::string> fStags;
 		std::pair<std::string,std::string> fAlgosPathName;
 		std::pair<std::string,std::string> fDstPathName;
@@ -75,6 +74,7 @@ class AlexConf {
 
     std::vector<alex::DParam> fGalexParam;
 
+    std::map<std::string, std::string > fAlgoDebug;
     std::map<std::string, std::vector<alex::DParam> > fAlgoParam;
     std::map<std::string, std::vector<alex::DArray> > fAlgoArray;
     std::map<std::string, std::vector<alex::DH1> > fAlgoH1D;

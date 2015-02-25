@@ -31,8 +31,8 @@ namespace alex {
 //--------------------------------------------------------------------
   {
     InitLogger("AlexConfigure");
-    SetDebugLevel(debugLevel,"AlexConfigure");
-    fDebugLevel = debugLevel;
+    fDebug = debugLevel;
+    SetDebugLevel(fDebug,"AlexConfigure");
     log4cpp::Category& klog = GetLogger("AlexConfigure");
     klog << log4cpp::Priority::DEBUG << " AlexConf::Init() " ;
 
@@ -94,6 +94,8 @@ namespace alex {
     fDebug  = elem->GetText();
     klog << log4cpp::Priority::DEBUG << " debug = " << fDebug;
 
+    SetDebugLevel(fDebug,"AlexConfigure");
+
     ParseAlgosConfiguration();
     ParseAlgos();
 
@@ -145,7 +147,7 @@ namespace alex {
     {
       auto algoPath = fAlgoPath[i];
       auto algoName = fAlgoNames[i];
-      vector<DParam> paramVector;
+      //vector<DParam> paramVector;
 
       klog << log4cpp::Priority::DEBUG << " algoPath = " << algoPath;
       fDoc.LoadFile( algoPath.c_str() );
@@ -156,9 +158,18 @@ namespace alex {
         << fDoc.ErrorID();
         exit (EXIT_FAILURE);
       }
-      XMLElement* rootElement = fDoc.RootElement();  
+      XMLElement* rootElement = fDoc.RootElement(); 
+
+      //Parse Debug
+      const XMLElement* debugElement = rootElement->FirstChildElement ("Debug") ;
+      const XMLElement* elem = debugElement->FirstChildElement ("level") ;
+      std::string debug = elem->GetText();
+      klog << log4cpp::Priority::DEBUG << " debug = " << debug;
+      fAlgoDebug[algoName]=debug;
+
+
+      //Parse Param
       const XMLElement* param = rootElement->FirstChildElement ("Param") ;
-      
       if (param != NULL)
       {
         vector<DParam> paramVector;
@@ -175,8 +186,8 @@ namespace alex {
         fAlgoParam[algoName]=paramVector;
       }
 
+      //Parse Array
       const XMLElement* array = rootElement->FirstChildElement ("Array") ;
-
       if (array != NULL)
       {
         vector<DArray> arrayVector;
@@ -192,8 +203,8 @@ namespace alex {
         fAlgoArray[algoName]=arrayVector;
       }
     
+      //Parse H1D
       const XMLElement* h1d = rootElement->FirstChildElement ("H1D") ;
-
       if (h1d != NULL)
       {
         vector<DH1> h1Vector;
@@ -209,8 +220,8 @@ namespace alex {
         fAlgoH1D[algoName]=h1Vector;
       }
 
+      //Parse H2D
       const XMLElement* h2d = rootElement->FirstChildElement ("H2D") ;
-
       if (h2d != NULL)
       {
         vector<DH2> h2Vector;
@@ -598,9 +609,9 @@ namespace alex {
       s << "    bool Init() ;"<< endl;
       s << "    bool Execute() ;"<< endl;
       s << "    bool End() ;"<< endl;
-      s << "    std::string  Name() const {return fName;}"<< endl;
-      s << "    void SetName(std::string name) {fName = name;}"<< endl;
       s << "  private:"<< endl;
+      s << "    std::string fName ;"<< endl;
+      s << "    std::string fDebug ;"<< endl;
       std::vector<alex::DParam> vparam = fAlgoParam[algoName];
       for (auto param : vparam)
       {
@@ -662,8 +673,10 @@ namespace alex {
     {
       s << "\n\n  "<<algoName<<"::"<<algoName<<"()"<<endl;
       s << "  {" << endl;
-      s << "      InitLogger(fName);" << endl;
-      s << "      SetLevelDebug(fDebug);" << endl;
+      s << "   fName =" << '"' << algoName  << '"' << ";"<< endl;
+      s << "   fDebug =" << '"'<<fAlgoDebug[algoName] << '"' << ";" << endl;
+      s << "   InitLogger(fName);" << endl;
+      s << "   SetDebugLevel(fDebug,fName);" << endl;
     
       std::vector<alex::DParam> vparam = fAlgoParam[algoName];
       for (auto param : vparam)
