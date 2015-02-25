@@ -12,9 +12,10 @@ namespace alex {
   public:
     
     // Constructors
-    AParticle();
+    AParticle(std::string debugLevel="WARN");
     AParticle(int Id, std::string name, bool isPrimary, double charge, 
-              TVector3 vertex, TLorentzVector p4, int motherId);
+              TVector3 vertex, TLorentzVector p4, int motherId,
+              std::string debugLevel="WARN");
 
     AParticle(const AParticle& apart);
 

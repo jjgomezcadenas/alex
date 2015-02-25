@@ -99,7 +99,7 @@ EXECUTE_PROCESS(
   COMMAND mkdir -p alex)
 
 #FILE(GLOB alex_headers util/*.h tutil/*.h admodel/*.h)
-FILE(GLOB alex_headers base/*.h admodel/*.h)
+FILE(GLOB alex_headers base/*.h admodel/*.h svc/*.h)
 
 FOREACH(file ${alex_headers})
   EXECUTE_PROCESS(
@@ -109,16 +109,14 @@ ENDFOREACH(file)
 #names for src and bin directories
 
 set(ADMODEL_SRC ${CMAKE_SOURCE_DIR}/admodel)
-# set(UTIL_SRC ${CMAKE_SOURCE_DIR}/util)
-# set(TUTIL_SRC ${CMAKE_SOURCE_DIR}/tutil)
 set(CONFIG_SRC ${CMAKE_SOURCE_DIR}/config)
 set(BASE_SRC ${CMAKE_SOURCE_DIR}/base)
+set(SVC_SRC ${CMAKE_SOURCE_DIR}/svc)
 
 set(ADMODEL_BIN ${CMAKE_BINARY_DIR}/admodel)
-# set(UTIL_BIN ${CMAKE_BINARY_DIR}/util)
-# set(TUTIL_BIN ${CMAKE_BINARY_DIR}/tutil)
 set(CONFIG_BIN ${CMAKE_BINARY_DIR}/config)
 set(BASE_BIN ${CMAKE_BINARY_DIR}/base)
+set(SVC_BIN ${CMAKE_BINARY_DIR}/svc)
 
 
 # Directories that will be searched for headers during compilation
@@ -167,21 +165,13 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}
 
 
 
-
-# ADD_SUBDIRECTORY(util)
-# ADD_SUBDIRECTORY(tutil)
 ADD_SUBDIRECTORY(base)
 ADD_SUBDIRECTORY(admodel)
-ADD_SUBDIRECTORY(config) 
+ADD_SUBDIRECTORY(config)
+ADD_SUBDIRECTORY(svc) 
 
 #ADD_SUBDIRECTORY(${ALEX_WDIR})
-#ADD_SUBDIRECTORY(alexMain)
-#ADD_SUBDIRECTORY(galex)
-#ADD_SUBDIRECTORY(asvc)
-#ADD_SUBDIRECTORY(test)
-#ADD_SUBDIRECTORY(exampleConf)
-#ADD_SUBDIRECTORY(example)
-#ADD_SUBDIRECTORY(exampleMain)
+
 
 INSTALL(FILES ${alex_headers} DESTINATION include/alex)
 # # Installation destinations (just for the lib, not the python module)

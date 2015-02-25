@@ -17,7 +17,7 @@ namespace alex {
     ABase(){};
     
     // Destructor
-    ~ABase(){};
+    virtual ~ABase(){};
 
     // ID
     int GetID() const
@@ -45,7 +45,6 @@ namespace alex {
 
     std::string PrintInfo() const ; 
     std::string PrintProperties() const;
-
     
   protected:
     int fId; // Unique identification number

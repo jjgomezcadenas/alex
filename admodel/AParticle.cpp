@@ -17,18 +17,19 @@ ClassImp(alex::AParticle)
 
 namespace alex {
 
-  AParticle::AParticle()
+  AParticle::AParticle(std::string debugLevel)
   {
     InitLogger("Aparticle");
+    fDebug = debugLevel;
+    SetDebugLevel(fDebug,"Aparticle");
   }
 	AParticle::AParticle(int Id, std::string name, 
 											bool isPrimary, double charge, 
          							TVector3 vertex, 
          							TLorentzVector p4,
-                      int motherID)
+                      int motherID,std::string debugLevel)
   {
  		SetID(Id);
-    SetDebug("WARN");
   	SetParticleName(name);
   	SetIsPrimary(isPrimary);
  		SetCharge(charge);
@@ -36,7 +37,8 @@ namespace alex {
   	SetP4(p4);
     SetMotherID(motherID);
     InitLogger("Aparticle");
-    SetDebug("WARN");
+    fDebug = debugLevel;
+    SetDebugLevel(fDebug,"Aparticle");
   }
 
   void AParticle::SetLevelDebug(std::string debugLevel)
@@ -56,6 +58,7 @@ namespace alex {
   	SetVertex(apart.GetVertex());
   	SetP4(apart.GetP4());
     SetMotherID(apart.GetMotherId());
+    SetDebug(apart.GetDebug());
 
     std::map <std::string, std::string> props = apart.GetProperties();
     for (auto prop : props) SetProperty(prop.first, prop.second);
