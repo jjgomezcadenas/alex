@@ -69,11 +69,11 @@ int main(int argc, char **argv)
 	string alexConf="AlexConfig.xml";  //Alex configuration (input) 
 
   //generated files
-	string aConfHeader="AConf.hh";      
-	string aConfCpp="AConf.cxx";        
+	//string aConfHeader="AConf.hh";      
+	string aConfCpp="AlgoConf.cxx";        
 	string algoCpp="AlgoAux.cxx";       
 	string registerAlgos="RegisterAlgos.cxx";
-  string registerAlgosHeader="RegisterAlgosHeader.hh";
+  //string registerAlgosHeader="RegisterAlgosHeader.hh";
 	string algoHeader="AlgoHeaders.hh";
   
   
@@ -83,16 +83,16 @@ int main(int argc, char **argv)
 
 	AlexConfigure::Instance().ParseConfiguration(pathAlexConf);
 	
-	{
-  	string pathAConfHeader = PathFromStrings(pathToAlgos,aConfHeader);
-  	klog << log4cpp::Priority::INFO 
-    	    << " Write AConf header file at=" << pathAConfHeader;
+	// {
+ //  	string pathAConfHeader = PathFromStrings(pathToAlgos,aConfHeader);
+ //  	klog << log4cpp::Priority::INFO 
+ //    	    << " Write AConf header file at=" << pathAConfHeader;
 
-		std::ofstream out(pathAConfHeader.c_str());
-  	out << AlexConfigure::Instance().WriteAConfHeader();
-  	out.close();
-	}
-  
+	// 	std::ofstream out(pathAConfHeader.c_str());
+ //  	out << AlexConfigure::Instance().WriteAConfHeader();
+ //  	out.close();
+	// }
+
 	{
   	string pathAConfCpp = PathFromStrings(pathToAlgos,aConfCpp);
   	klog << log4cpp::Priority::INFO 
@@ -117,14 +117,14 @@ int main(int argc, char **argv)
   	out << AlexConfigure::Instance().WriteAlgoHeaderFile();
   	out.close();
 	}
-  {
-    string pathRegisterAlgoHeader = PathFromStrings(pathToAlgos,registerAlgosHeader);
-    klog << log4cpp::Priority::INFO 
-          << " Write Register algoHeader file at=" << pathRegisterAlgoHeader;
-    std::ofstream out(pathRegisterAlgoHeader.c_str());
-    out << AlexConfigure::Instance().WriteRegisterAlgosHeader();
-    out.close();
-  }
+  // {
+  //   string pathRegisterAlgoHeader = PathFromStrings(pathToAlgos,registerAlgosHeader);
+  //   klog << log4cpp::Priority::INFO 
+  //         << " Write Register algoHeader file at=" << pathRegisterAlgoHeader;
+  //   std::ofstream out(pathRegisterAlgoHeader.c_str());
+  //   out << AlexConfigure::Instance().WriteRegisterAlgosHeader();
+  //   out.close();
+  // }
 
 
 	std::vector<std::string> ah = AlexConfigure::Instance().WriteAlgoHeaders();

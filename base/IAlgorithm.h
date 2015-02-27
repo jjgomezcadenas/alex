@@ -13,8 +13,8 @@ namespace alex {
 	virtual bool Init() = 0;
 	virtual bool Execute() = 0;
 	virtual bool End() = 0;
-	virtual std::string  Name() const = 0;
-	virtual void SetName(std::string) = 0;
+	//virtual std::string  Name() const = 0;
+	//virtual void SetName(std::string) = 0;
 
 	};
 }

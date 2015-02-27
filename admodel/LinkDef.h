@@ -16,6 +16,7 @@
 #pragma link C++ namespace alex+;
 #pragma link C++ class alex::ABase+;
 #pragma link C++ class alex::AParticle+;
+#pragma link C++ class std::vector <alex::AParticle>+;
 
 
 #endif

@@ -34,9 +34,6 @@ MESSAGE("CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 SET(CMAKE_INSTALL_PREFIX $ENV{INSTALL})
 MESSAGE("CMAKE_INSTALL_PREFIX set to: ${CMAKE_INSTALL_PREFIX}")
 
-# Set working (algos) dir
-SET(ALEX_WDIR $ENV{AWDIR}
-)
 
 # Look for root
 
@@ -86,8 +83,6 @@ MESSAGE("ROOT libraries: ${ROOT_LIBRARIES}")
 # MESSAGE("RecPack libraries: ${RECPACK_LIBRARIES}")
 # MESSAGE("CLHEP libraries: ${CLHEP_LIBRARIES}")
 
- 
-
 # SET(GALEX galex) # Define the galex directory
 
 # SET(TSVC ${CMAKE_SOURCE_DIR}/tsvc) # Define the tsvc directory
@@ -107,16 +102,20 @@ FOREACH(file ${alex_headers})
 ENDFOREACH(file)
 
 #names for src and bin directories
-
+# Set working (algos) dir
+SET(ALGOS_SRC ${CMAKE_SOURCE_DIR}/$ENV{AWDIR}/src)
 set(ADMODEL_SRC ${CMAKE_SOURCE_DIR}/admodel)
 set(CONFIG_SRC ${CMAKE_SOURCE_DIR}/config)
 set(BASE_SRC ${CMAKE_SOURCE_DIR}/base)
 set(SVC_SRC ${CMAKE_SOURCE_DIR}/svc)
+set(MAIN_SRC ${CMAKE_SOURCE_DIR}/main)
 
 set(ADMODEL_BIN ${CMAKE_BINARY_DIR}/admodel)
 set(CONFIG_BIN ${CMAKE_BINARY_DIR}/config)
 set(BASE_BIN ${CMAKE_BINARY_DIR}/base)
 set(SVC_BIN ${CMAKE_BINARY_DIR}/svc)
+set(MAIN_BIN ${CMAKE_BINARY_DIR}/main)
+SET(ALGOS_BIN ${CMAKE_BINARY_DIR}/$ENV{AWDIR})
 
 
 # Directories that will be searched for headers during compilation
@@ -129,8 +128,18 @@ set(SVC_BIN ${CMAKE_BINARY_DIR}/svc)
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} 
           ${IRENE_INCLUDE_DIR} ${PAOLINA_INCLUDE_DIR} 
           ${ROOT_INCLUDE_DIR} ${TINYXML2_INCLUDE_DIR} 
-          ${LOG4CPP_INCLUDE_DIR} ${CONFIG_SRC})
+          ${LOG4CPP_INCLUDE_DIR} ${CONFIG_SRC} ${MAIN_SRC} ${ALGOS_SRC})
 
+
+ADD_SUBDIRECTORY(base)
+ADD_SUBDIRECTORY(admodel)
+ADD_SUBDIRECTORY(config)
+ADD_SUBDIRECTORY(svc)
+ADD_SUBDIRECTORY(${ALGOS_SRC})
+ADD_SUBDIRECTORY(main) 
+
+
+INSTALL(FILES ${alex_headers} DESTINATION include/alex)
 
 #  FILE(GLOB alex_src . util/*.cpp config/*.cpp base/*.cpp isvc/*.cpp psvc/*.cpp
 #  asvc/*.cpp tsvc/*.cpp )
@@ -165,15 +174,6 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}
 
 
 
-ADD_SUBDIRECTORY(base)
-ADD_SUBDIRECTORY(admodel)
-ADD_SUBDIRECTORY(config)
-ADD_SUBDIRECTORY(svc) 
-
-#ADD_SUBDIRECTORY(${ALEX_WDIR})
-
-
-INSTALL(FILES ${alex_headers} DESTINATION include/alex)
 # # Installation destinations (just for the lib, not the python module)
 # INSTALL(TARGETS alex LIBRARY DESTINATION lib)
 # INSTALL(FILES ${alex_headers} DESTINATION include/alex)

@@ -32,7 +32,7 @@ namespace alex {
     SetDebugLevel(fDebugLevel,"Isvc");
 
     log4cpp::Category& klog  = GetLogger("Isvc");
-    klog << log4cpp::Priority::DEBUG << "IreneManager::Init()" ;
+    klog << log4cpp::Priority::DEBUG << "Irene Service Initialized" ;
    
   }
 

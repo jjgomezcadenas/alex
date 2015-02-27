@@ -11,8 +11,8 @@ MESSAGE("Creating Svc library")
 
 ROOT_LINKER_LIBRARY(asvc ${svc_src}  
                     LIBRARIES ${BASE_LIB} ${LOG4CPP_LIBRARIES} 
-                    ${ROOT_LIBRARIES} 
-                    ${IRENE_LIBRARIES})
+                    ${ROOT_LIBRARIES} ${IRENE_LIBRARIES}
+                    ${PAOLINA_LIBRARIES})
 
 INSTALL(TARGETS asvc DESTINATION lib)
 INSTALL(FILES ${svc_h} DESTINATION include/alex)
