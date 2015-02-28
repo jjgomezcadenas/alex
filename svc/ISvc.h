@@ -33,9 +33,14 @@ class IreneManager {
 
 		TVector3 TrueVertex(){return fVertex;}
 		
-		IParticles GetParticles() const {return fIreneParticles;}
-		ITracks GetTracks() const {return fIreneTracks;}
-		IHits GetTrueHits() const {return fTrueHits;}
+		std::vector<const irene::Particle*> GetParticles() const 
+		{return fIreneParticles;}
+
+		std::vector<const irene::Track*> GetTracks() const 
+		{return fIreneTracks;}
+
+		std::vector<std::pair<TLorentzVector,double> > GetTrueHits() const 
+		{return fTrueHits;}
 
 		void PrintHits();
 		void PrintTrueEvent();

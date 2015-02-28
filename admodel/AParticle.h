@@ -12,10 +12,9 @@ namespace alex {
   public:
     
     // Constructors
-    AParticle(std::string debugLevel="WARN");
+    AParticle();
     AParticle(int Id, std::string name, bool isPrimary, double charge, 
-              TVector3 vertex, TLorentzVector p4, int motherId,
-              std::string debugLevel="WARN");
+              TVector3 vertex, TLorentzVector p4, int motherId);
 
     AParticle(const AParticle& apart);
 
@@ -82,7 +81,8 @@ namespace alex {
     void DisplayInfo(std::ostream& s) const;
     std::string PrintInfo() const; 
 
-    
+  
+
   private:
     int fMotherId;
     std::string fName; // Particle name

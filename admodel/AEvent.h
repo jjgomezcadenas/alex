@@ -12,9 +12,7 @@
 #ifndef AEEVENT_H_
 #define AEEVENT_H_
 
-#include <alex/TDefs.h>
-#include <alex/GDefs.h>
-#include <TObject.h>
+#include <alex/AEventHeader.h>
 
 
 namespace alex {
@@ -23,40 +21,32 @@ namespace alex {
   
   /// Persistent class
   
-  class AEvent : public TObject {
+  class AEvent : public AEventHeader {
     
   public: 
     /// Constructor
     AEvent();
+    AEvent(int evtNumber,
+                 double trueEventEnergy, double recEventEnergy);
     /// Destructor
     virtual ~AEvent();
 
-    AEvent(const AEvent&);
-
-    void SetID(int id) {fEventID = id;} 
-    int GetID() const {return fEventID;}
+    AEvent(const AEvent& aev);
 
     void SetLevelDebug(std::string debugLevel);
 
-    double GetTrueEventEnergy() const {return fTrueEventEnergy;}
-    double GetRecEventEnergy() const {return fRecEventEnergy;}
-    void SetRecEventEnergy(double e) {fRecEventEnergy=e;}
-    void SetTrueEventEnergy(double e) {fTrueEventEnergy=e;}
-
-    void AddParticle(const AParticle* apart);
+    void AddParticle(AParticle* apart);
+    
     const std::vector <alex::AParticle*> GetParticles() const {return fParticles;}
 
     void ClearEvent();
    
+    std::string PrintInfo() const;
+
+
    private:
 
     std::string fDebugLevel;
-
-    int fStartEvt;
-    int fEvtNum;
-
-    double fTrueEventEnergy;
-    double fRecEventEnergy;
 
     std::vector <alex::AParticle*> fParticles;
 

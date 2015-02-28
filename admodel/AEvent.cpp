@@ -20,23 +20,34 @@ ClassImp(alex::AEvent)
 namespace alex {
 
 
-  AEvent::AEvent() : fEventID(0), 
-  fTrueEventEnergy(0),fRecEventEnergy(0)
+  AEvent::AEvent() : AEventHeader()
   { 
-  	fDebugLevel = "DEBUG"; ///< particles
+  	fDebugLevel = "DEBUG"; 
+    InitLogger("AEvent");
+    SetDebugLevel(fDebugLevel,"AEvent");
+  }
+
+  AEvent::AEvent(int evtNumber,
+                 double trueEventEnergy, double recEventEnergy)
+  {
+    AEventHeader(evtNumber,trueEventEnergy,recEventEnergy);
+    fDebugLevel = "DEBUG"; 
     InitLogger("AEvent");
     SetDebugLevel(fDebugLevel,"AEvent");
   }
 
   AEvent::AEvent(const AEvent& aev)
   {
-    SetID(aev.GetID()) ;
-    SetTrueEventEnergy(aev.GetTrueEventEnergy());
-    SetRecEventEnergy(aev.GetRecEventEnergy());
+    AEventHeader(aev.GetEvtNum(),aev.GetTrueEventEnergy(),aev.GetRecEventEnergy());
+    // SetTrueEventEnergy(aev.GetTrueEventEnergy());
+    // SetRecEventEnergy(aev.GetRecEventEnergy());
+    // SetEvtNum(aev.GetEvtNum());
+
+    ClearEvent();
 
     for (auto part : aev.GetParticles())
     {
-      AddParticle(new AParticle(*apart));
+      AddParticle(part);
     }
     
   }
@@ -52,15 +63,30 @@ namespace alex {
     SetDebugLevel(fDebugLevel,"AEvent");  
   }
 
-  void AEvent::AddParticle(const AParticle* apart)
+  void AEvent::AddParticle(AParticle* apart)
   {
-    fParticles.push_back(new AParticle(*apart));
+    fParticles.push_back(apart);
   }
 
   void AEvent::ClearEvent()
   {
     VDelete(fParticles); 
     fParticles.clear();
+  }
+
+  std::string AEvent::PrintInfo() const
+  { 
+    std::stringstream s;
+    s << " Event number " << GetEvtNum() << std::endl;
+    s << " Event true energy " << GetTrueEventEnergy() << std::endl;
+    s << " Event reco energy " << GetRecEventEnergy() << std::endl;
+    s << " number of particles in event " << GetParticles().size() << std::endl;
+    s << " +++list of particles+++++ " << std::endl;
+
+    for (auto particle : GetParticles()) 
+      s << particle->PrintInfo() << std::endl;
+
+    return s.str();
   }
 
   

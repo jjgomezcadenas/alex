@@ -26,17 +26,21 @@ class AlexService {
 
 		virtual ~AlexService(){};
 		
-		void Init(std::string debugLevel);
+		void Init(std::string debugLevel, int startEvt);
 
 		void SetLevelDebug(std::string debugLevel);
+		void SetStartEvent(int sevt) { fStartEvt = sevt; }
+    int GetStartEvent() const { return fStartEvt; }
 
 		void LoadEvent(const alex::AEvent* evt);
 		void ClearEvent() ;
-		const AEvent& GetEvent() {return *fEvt;} const 
+		//const AEvent& GetEventConst() {return *fEvt;} const 
+		AEvent& GetAEvent() {return *fEvt;}  
 
 
 	private:
 	  std::string fDebugLevel;
+	  int fStartEvt;
 	  AEvent* fEvt;
 	
 	};

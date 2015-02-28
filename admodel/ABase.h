@@ -43,12 +43,23 @@ namespace alex {
     void SetProperty(std::string name, std::string value)
     {fProperties[name]=value;}
 
+    // Params
+    std::map <std::string, double> GetParams() const
+    {return fParam;}
+    
+    double GetParam(std::string name) 
+    {return fParam[name];}
+    
+    void SetParam(std::string name, double value)
+    {fParam[name]=value;}
+
     std::string PrintInfo() const ; 
     std::string PrintProperties() const;
     
   protected:
     int fId; // Unique identification number
     std::map <std::string, std::string> fProperties; // Properties if needed 
+    std::map <std::string, double> fParam; // Properties if needed 
     std::string fDebug;
     
     ClassDef(ABase,1);

@@ -22,10 +22,12 @@ using std::vector;
 namespace alex {
 
 //--------------------------------------------------------------------
-  void AlexService::Init(std::string debugLevel)
+  void AlexService::Init(std::string debugLevel, int startEvt)
 //--------------------------------------------------------------------
   {
     fDebugLevel = debugLevel;
+    fStartEvt=startEvt;
+
     InitLogger("Asvc");
     SetDebugLevel(fDebugLevel,"Asvc");
 
@@ -48,14 +50,14 @@ namespace alex {
     
   }
 
-
 //--------------------------------------------------------------------
   void AlexService::LoadEvent(const AEvent* ievt)
 //--------------------------------------------------------------------
   {
     log4cpp::Category& klog = GetLogger("Asvc");
-    klog << log4cpp::Priority::DEBUG << "***** AlexManager::Load Event "
+    klog << log4cpp::Priority::DEBUG << "***** AlexManager::Load Event ";
 
+    ClearEvent();
     fEvt = new AEvent(*ievt); 
   }
 
@@ -64,7 +66,7 @@ namespace alex {
 //--------------------------------------------------------------------
   {
     log4cpp::Category& klog = GetLogger("Asvc");
-    klog << log4cpp::Priority::DEBUG << "***** AlexManager::Clear Event "
+    klog << log4cpp::Priority::DEBUG << "***** AlexManager::Clear Event ";
 
     delete fEvt ; 
     

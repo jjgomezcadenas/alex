@@ -17,17 +17,17 @@ ClassImp(alex::AParticle)
 
 namespace alex {
 
-  AParticle::AParticle(std::string debugLevel)
+  AParticle::AParticle()
   {
     InitLogger("Aparticle");
-    fDebug = debugLevel;
+    fDebug = "WARN";
     SetDebugLevel(fDebug,"Aparticle");
   }
 	AParticle::AParticle(int Id, std::string name, 
 											bool isPrimary, double charge, 
          							TVector3 vertex, 
          							TLorentzVector p4,
-                      int motherID,std::string debugLevel)
+                      int motherID)
   {
  		SetID(Id);
   	SetParticleName(name);
@@ -37,16 +37,14 @@ namespace alex {
   	SetP4(p4);
     SetMotherID(motherID);
     InitLogger("Aparticle");
-    fDebug = debugLevel;
+    fDebug = "WARN";
     SetDebugLevel(fDebug,"Aparticle");
   }
 
   void AParticle::SetLevelDebug(std::string debugLevel)
   {
-
     fDebug = debugLevel;
-    SetDebugLevel(fDebug,"Aparticle");
-    
+    SetDebugLevel(fDebug,"Aparticle"); 
   }
 
   AParticle::AParticle(const AParticle& apart)
@@ -67,7 +65,7 @@ namespace alex {
 
 	void AParticle::DisplayInfo(std::ostream& s) const
   { 
-   	s << "* Particle " << GetID() << ": " << GetParticleName();
+   	s << "  Particle " << GetID() << ": " << GetParticleName();
     s << "  Charge: " << GetCharge() << "  Mass: " << GetMass() << std::endl;
    	s << "  Primary: " << GetIsPrimary() << " -> Mother ID: " << GetMotherId() << std::endl;
    	s << "  Initial Vertex: " << PrintTVector3(GetVertex());
@@ -83,9 +81,7 @@ namespace alex {
     DisplayInfo(s);
     return s.str();
   }
-
 }
-
 
 std::ostream& operator << (std::ostream& s, const alex::AParticle& ap) 
 {

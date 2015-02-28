@@ -14,6 +14,8 @@
 #pragma link off all functions;
 
 #pragma link C++ namespace alex+;
+#pragma link C++ class alex::AEvent+;
+#pragma link C++ class alex::AEventHeader+;
 #pragma link C++ class alex::ABase+;
 #pragma link C++ class alex::AParticle+;
 #pragma link C++ class std::vector <alex::AParticle>+;

@@ -27,6 +27,13 @@ std::string ABase::PrintInfo() const
     		s << "Property["<<it->first <<"]="<< it->second << std::endl;
     	}
 
+    for (std::map<std::string,double>::const_iterator 
+          it=fParam.begin(); 
+          it!=fParam.end(); ++it)
+      {
+        s << "Param["<<it->first <<"]="<< it->second << std::endl;
+      }
+
       return s.str();
   }
 
@@ -38,6 +45,13 @@ std::string ABase::PrintInfo() const
            it!=fProperties.end(); ++it)
       {
         s << "    Property["<<it->first <<"] = "<< it->second << std::endl;
+      }
+
+      for (std::map<std::string,double>::const_iterator 
+          it=fParam.begin(); 
+          it!=fParam.end(); ++it)
+      {
+        s << "Param["<<it->first <<"]="<< it->second << std::endl;
       }
       return s.str();
     }

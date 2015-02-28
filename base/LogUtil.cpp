@@ -40,8 +40,8 @@ namespace alex {
   void SetDebugLevelRoot(string debugLevel) 
   {
     log4cpp::Category& klog = log4cpp::Category::getRoot();
-    klog << log4cpp::Priority::DEBUG 
-          << "In DebugSvc::Configure SetLogger to " << debugLevel;
+    // klog << log4cpp::Priority::DEBUG 
+    //       << "In DebugSvc::Configure SetLogger to " << debugLevel;
 
     if(debugLevel == "FATAL")
       klog.setPriority(log4cpp::Priority::FATAL);
@@ -60,8 +60,8 @@ namespace alex {
   void SetDebugLevel(string debugLevel, string logger) 
   {
     log4cpp::Category& klog = log4cpp::Category::getInstance(logger);
-    klog << log4cpp::Priority::DEBUG 
-          << "In SetDebugLevel " << logger << " set debug level to " << debugLevel;
+    // klog << log4cpp::Priority::DEBUG 
+    //       << "In SetDebugLevel " << logger << " set debug level to " << debugLevel;
 
     if(debugLevel == "FATAL")
       klog.setPriority(log4cpp::Priority::FATAL);

@@ -117,6 +117,11 @@ set(SVC_BIN ${CMAKE_BINARY_DIR}/svc)
 set(MAIN_BIN ${CMAKE_BINARY_DIR}/main)
 SET(ALGOS_BIN ${CMAKE_BINARY_DIR}/$ENV{AWDIR})
 
+SET(BASE_LIB "-L${BASE_BIN}/ -labase")
+SET(ADMODEL_LIB "-L${ADMODEL_BIN}/ -ladmodel")
+SET(SVC_LIB "-L${SVC_BIN}/ -lasvc")
+SET(ALGOS_LIB "-L${ALGOS_BIN}/src/ -laalgos") 
+
 
 # Directories that will be searched for headers during compilation
 # INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${TSVC}
@@ -136,7 +141,11 @@ ADD_SUBDIRECTORY(admodel)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(svc)
 ADD_SUBDIRECTORY(${ALGOS_SRC})
-ADD_SUBDIRECTORY(main) 
+ADD_SUBDIRECTORY(main)
+
+#symbols libraries to lib in build area 
+  # EXECUTE_PROCESS(
+  #   COMMAND ln -s -f ${BASE_BIN}/libabase.so lib/.)
 
 
 INSTALL(FILES ${alex_headers} DESTINATION include/alex)
