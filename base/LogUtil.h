@@ -23,6 +23,7 @@ namespace alex {
 	void InitLogger(std::string logger);
 	void SetDebugLevelRoot(std::string debugLevel);
 	void SetDebugLevel(string debugLevel, string logger);
+	std::string GetDebugLevel(string logger);
 	log4cpp::Category& GetLogger(std::string logger);
   	log4cpp::Category& GetLoggerRoot();
 

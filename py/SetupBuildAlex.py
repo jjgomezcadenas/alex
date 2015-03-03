@@ -11,10 +11,9 @@ def cond_mkdir(path):
 
 if __name__ == "__main__":
 
-	build_dir = "/Users/jjgomezcadenas/Development/build/alex-build"
-	lib_dir=build_dir+"/lib"
-	bin_dir=build_dir+"/bin"
-
+	build_dir=os.environ["ALEX_BUILD"]
+	lib_dir=os.environ["ALEX_BUILD_LIB"]
+	bin_dir=os.environ["ALEX_BUILD_BIN"]
 	cond_mkdir(lib_dir)
 	cond_mkdir(bin_dir)
 
@@ -26,26 +25,24 @@ if __name__ == "__main__":
 	command="ln -sf "+admodel_dir+"/libadmodel*.* "+lib_dir+"/."
 	os.system(command)
 
-	config_dir=build_dir+"/config"
-	command="ln -sf "+config_dir+"/libaconf*.* "+lib_dir+"/."
-	os.system(command)
-
 	svc_dir=build_dir+"/svc"
 	command="ln -sf "+svc_dir+"/libasvc*.* "+lib_dir+"/."
 	os.system(command)
 
-	command="ln -sf "+svc_dir+"/xConfigure "+bin_dir+"/."
+	algos_dir=build_dir+"/algos/src"
+	command="ln -sf "+algos_dir+"/libaalgos*.* "+lib_dir+"/."
 	os.system(command)
 
-	os.environ["PATH"]=bin_dir+":$PATH"
-	command ="export PATH="+bin_dir+":$PATH"
+	config_dir=build_dir+"/config"
+	command="ln -sf "+config_dir+"/libaconf*.* "+lib_dir+"/."
 	os.system(command)
+
+	main_dir=build_dir+"/main"
+	command="ln -sf "+config_dir+"/xConfigure "+bin_dir+"/."
+	os.system(command)
+
+	command="ln -sf "+main_dir+"/xAlex "+bin_dir+"/."
+	os.system(command)
+
 	
-	command="export DYLD_LIBRARY_PATH="+lib_dir+":$DYLD_LIBRARY_PATH"
-	os.system(command)
-	command="export LD_LIBRARY_PATH=$DYLD_LIBRARY_PATH"
-	os.system(command)
-
-	os.environ["TEST"]="OK"
-	os.system("echo $TEST")
 

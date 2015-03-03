@@ -68,6 +68,8 @@ class AlexConf {
 		std::pair<std::string,std::string> fHistoPathName;
 		std::pair<int,int> fEvents;
 		std::string fDebug;
+		std::map<std::string, double > fAlexNumberParam;
+		std::map<std::string, std::string > fAlexStringParam;
 
 		std::vector<std::string> fAlgoNames;
     std::vector<std::string> fAlgoPath;

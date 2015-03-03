@@ -22,18 +22,18 @@ using std::vector;
 int main(int argc, char **argv)
 {
 	
-  //cout << "argc = " << argc << endl;
-  //cout << "argv[0] = " << argv[1] << endl;
+  cout << "xConfigure: a program to configure Alex" << endl;
 
-  if( argc != 4)   
+  if( argc != 5)   
   { 
-    cout <<" Usage: xConfigure <debugLevel> <pathToXml> <pathToSrc>" << endl;
+    cout <<" Usage: xConfigure <debugLevel> <pathToXml> <pathToAlgos> <pathToAlex>" << endl;
     return -1;
   }
 
   string debugLevel;
   string pathToAlgos;
   string pathToXml;
+  string pathToAlex;
 
   {
     stringstream ss;
@@ -50,6 +50,11 @@ int main(int argc, char **argv)
     ss << argv[3];
     ss>>pathToAlgos;
   }
+  {
+    stringstream ss;
+    ss << argv[4];
+    ss>>pathToAlex;
+  }
 
   InitLogger("xConfigure");
   SetDebugLevel(debugLevel,"xConfigure");
@@ -62,6 +67,10 @@ int main(int argc, char **argv)
 
   klog << log4cpp::Priority::INFO 
         << " xConfigure: path to xml =" << pathToXml;
+
+  klog << log4cpp::Priority::INFO 
+        << " xConfigure: path to xml =" << pathToAlex;
+  
   
   
 	//Define files
@@ -69,10 +78,10 @@ int main(int argc, char **argv)
 	string alexConf="AlexConfig.xml";  //Alex configuration (input) 
 
   //generated files
-	//string aConfHeader="AConf.hh";      
-	string aConfCpp="AlgoConf.cxx";        
-	string algoCpp="AlgoAux.cxx";       
-	string registerAlgos="RegisterAlgos.cxx";
+	string aConfHeader="AlexConf.hh";  //configuration of alex (main)    
+	string aConfCpp="AlexConf.cxx";    //configuration of alex (main)    
+	string algoCpp="AlgoAux.cxx";   //configuration of algos    
+	string registerAlgos="RegisterAlgos.cxx"; //configuration of algos
   //string registerAlgosHeader="RegisterAlgosHeader.hh";
 	string algoHeader="AlgoHeaders.hh";
   
@@ -83,20 +92,20 @@ int main(int argc, char **argv)
 
 	AlexConfigure::Instance().ParseConfiguration(pathAlexConf);
 	
-	// {
- //  	string pathAConfHeader = PathFromStrings(pathToAlgos,aConfHeader);
- //  	klog << log4cpp::Priority::INFO 
- //    	    << " Write AConf header file at=" << pathAConfHeader;
+	{
+  	string pathAConfHeader = PathFromStrings(pathToAlex,aConfHeader);
+  	klog << log4cpp::Priority::INFO 
+    	    << " Write AlgoConf header file at=" << pathAConfHeader;
 
-	// 	std::ofstream out(pathAConfHeader.c_str());
- //  	out << AlexConfigure::Instance().WriteAConfHeader();
- //  	out.close();
-	// }
+		std::ofstream out(pathAConfHeader.c_str());
+  	out << AlexConfigure::Instance().WriteAConfHeader();
+  	out.close();
+	}
 
 	{
-  	string pathAConfCpp = PathFromStrings(pathToAlgos,aConfCpp);
+  	string pathAConfCpp = PathFromStrings(pathToAlex,aConfCpp);
   	klog << log4cpp::Priority::INFO 
-    	    << " Write AConf cpp file at=" << pathAConfCpp;
+    	    << " Write AlgoConf cpp file at=" << pathAConfCpp;
 		std::ofstream out(pathAConfCpp.c_str());
   	out << AlexConfigure::Instance().WriteAConfCPP();
   	out.close();

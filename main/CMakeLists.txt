@@ -2,7 +2,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 
-SET(alex_src ${MAIN_SRC}/alex.cc)
+SET(alex_src ${MAIN_SRC}/alex.cc ${MAIN_SRC}/AlexConf.cxx)
 
 MESSAGE("Creating xAlex")
 

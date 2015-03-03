@@ -10,7 +10,10 @@
 #include <alex/TDefs.h>
 #include <alex/SingletonTemplate.h>
 #include <alex/LogUtil.h>
+#include <TRandom.h>
 #include "IDefs.h"
+#include <alex/AParticle.h>
+ 
 
 
 
@@ -20,7 +23,7 @@ class IreneManager {
 	public:
 		IreneManager(){};
 		virtual ~IreneManager(){};
-		void Init(std::string debugLevel);
+		void Init(std::string debugLevel, double energyResolution);
 		void SetLevelDebug(std::string debugLevel);
 		void LoadEvent(const irene::Event* ievt);
 
@@ -42,6 +45,14 @@ class IreneManager {
 		std::vector<std::pair<TLorentzVector,double> > GetTrueHits() const 
 		{return fTrueHits;}
 
+		std::vector<alex::AParticle*> GetAlexParticles();
+
+		double GetTrueEventEnergy() const {return fTrueEventEnergy;}
+    double GetRecEventEnergy() const {return fRecEventEnergy;}
+    double ResolutionFWHM() const {return fFWHM; }
+    double ResolutionSigma() const {return fSigma; }
+    
+
 		void PrintHits();
 		void PrintTrueEvent();
 		
@@ -60,7 +71,13 @@ class IreneManager {
   	IHits fTrueHits;
   	TVector3 fVertex;
   	std::vector<const irene::Track*> fIreneTracks ;
-  	IParticles fIreneParticles;
+  	std::vector<const irene::Particle*>  fIreneParticles;
+  	double fFWHM;
+  	double fSigma;
+  	double fTrueEventEnergy;
+  	double fRecEventEnergy;
+  	TRandom* fRandom;
+
 
 	};
 

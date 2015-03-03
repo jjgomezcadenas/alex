@@ -5,6 +5,17 @@ using std::cout;
 using std::endl; 
 using std::ostream;
 
+// {
+//             "FATAL", "ALERT", "CRIT", "ERROR", "WARN",
+//             "NOTICE", "INFO", "DEBUG", "NOTSET", "UNKNOWN" 
+//         }
+
+// enum    PriorityLevel { 
+//   EMERG = 0, FATAL = 0, ALERT = 100, CRIT = 200, 
+//   ERROR = 300, WARN = 400, NOTICE = 500, INFO = 600, 
+//   DEBUG = 700, NOTSET = 800 
+// }
+
 namespace alex {
 
   void InitLoggerRoot()
@@ -75,6 +86,11 @@ namespace alex {
       klog.setPriority(log4cpp::Priority::INFO);
     else
       klog.setPriority(log4cpp::Priority::DEBUG);
+  }
+  string GetDebugLevel(string logger) 
+  {
+    log4cpp::Category& klog = log4cpp::Category::getInstance(logger);
+    return log4cpp::Priority::getPriorityName(klog.getPriority());
   }
 
 }

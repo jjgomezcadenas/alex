@@ -6,8 +6,6 @@ FILE(GLOB config_src ${CONFIG_SRC}/*.cpp)
 SET(xconfigure_src ${CONFIG_SRC}/xConfigure.cc)
 SET(config_h ${CONFIG_SRC}/AlexConfigure.h)
 
-SET(BASE_LIB "-L${BASE_BIN}/ -labase") 
-
 MESSAGE("Creating Configure library")
 
 ROOT_LINKER_LIBRARY(aconf ${config_src} 

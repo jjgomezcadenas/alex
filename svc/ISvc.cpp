@@ -12,6 +12,7 @@
 #include <alex/ISvc.h>
 #include <alex/LogUtil.h>
 #include <alex/VectorOperations.h>
+#include <TRandom.h>
 
 
 using std::string; 
@@ -23,13 +24,18 @@ using std::vector;
 namespace alex {
 
   //--------------------------------------------------------------------
-  void IreneManager::Init(std::string debugLevel)
+  void IreneManager::Init(std::string debugLevel, double energyResolution)
   //--------------------------------------------------------------------
   {
     fDebugLevel = debugLevel;
 
     InitLogger("Isvc");
     SetDebugLevel(fDebugLevel,"Isvc");
+
+    fFWHM = energyResolution;
+    fSigma = fFWHM/2.3548;
+    fRandom = new TRandom();
+    
 
     log4cpp::Category& klog  = GetLogger("Isvc");
     klog << log4cpp::Priority::DEBUG << "Irene Service Initialized" ;
@@ -71,6 +77,17 @@ namespace alex {
     klog << log4cpp::Priority::DEBUG 
     << "IreneManager::Size of particles vector: " << fIreneParticles.size();
 
+    
+
+    fTrueEventEnergy=0;
+    for (auto aPart : fIreneParticles) 
+    {
+      if (aPart->IsPrimary())
+        fTrueEventEnergy+=(aPart->Energy()-aPart->GetMass());
+    }
+
+    double gran=fSigma*fRandom->Gaus()*fTrueEventEnergy;
+    fRecEventEnergy=fTrueEventEnergy + gran;
   }
 
 
@@ -81,7 +98,37 @@ namespace alex {
     return *fIevt;
   }
 
+//--------------------------------------------------------------------
+  std::vector<alex::AParticle*> IreneManager::GetAlexParticles()
+//--------------------------------------------------------------------
+  {
+    log4cpp::Category& klog  = GetLogger("Isvc");
+    klog << log4cpp::Priority::DEBUG << "IreneManager::AlexParticles()" ;
 
+    std::vector<alex::AParticle*> aParticles;
+   
+    for (auto iPart: fIreneParticles ) 
+    {
+      AParticle* aPart = new AParticle();
+      aPart->SetLevelDebug(fDebugLevel);
+      aPart->SetID(iPart->GetParticleID());
+      aPart->SetParticleName(iPart->Name());
+      aPart->SetCharge(iPart->GetCharge());
+      aPart->SetVertex(iPart->GetInitialVertex().Vect());
+      aPart->SetP4(iPart->GetInitialMomentum());
+      aPart->SetIsPrimary(iPart->IsPrimary());
+      aPart->SetMotherID(0);
+      if (!aPart->GetIsPrimary())
+        aPart->SetMotherID(iPart->GetMother()->GetParticleID());
+
+      aPart->SetProperty("CreatorProcess", iPart->GetCreatorProcess());
+      aPart->SetParam("TrackLength", iPart->GetTrackLength());
+
+      aParticles.push_back(aPart);
+         
+    }
+    return aParticles;
+  }
   //--------------------------------------------------------------------
   void IreneManager::GetTrueVertex()
   //--------------------------------------------------------------------
