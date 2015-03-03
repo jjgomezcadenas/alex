@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-///  \file   AEventHeader.h
+///  \file   BEventHeader.h
 ///  \brief  base class for an event header
 ///
 ///  \author    gomez@mail.cern.ch
@@ -8,8 +8,8 @@
 ///  Copyright (c) 2015 NEXT Collaboration
 // ----------------------------------------------------------------------------
 
-#ifndef AEEVENTH_H_
-#define AEEVENTH_H_
+#ifndef BEEVENT_H_
+#define BEEVENT_H_
 
 #include <alex/TDefs.h>
 #include <alex/GDefs.h>
@@ -18,19 +18,19 @@
 
 namespace alex {
 
-  class AEventHeader : public TObject {
+  class BEventHeader : public TObject {
     
   public: 
     /// default Constructor
-    AEventHeader();
+    BEventHeader();
 
     ///Constructor
-    AEventHeader(int evtNumber,
+    BEventHeader(int evtNumber,
                  double trueEventEnergy, double recEventEnergy);
     /// Destructor
-    virtual ~AEventHeader(){};
+    virtual ~BEventHeader(){};
 
-    AEventHeader(const AEventHeader& bevt);
+    BEventHeader(const BEventHeader& bevt);
 
     double GetTrueEventEnergy() const {return fTrueEventEnergy;}
     double GetRecEventEnergy() const {return fRecEventEnergy;}
@@ -40,21 +40,17 @@ namespace alex {
     void SetEvtNum(int sevt) { fEvtNum = sevt; }  
     int GetEvtNum() const { return fEvtNum; }
 
-    void SetEnergyResolution(double fwhm) { fFWHM = fwhm; }  
-    double GetEnergyResolution() const { return fFWHM; }
-
     std::string PrintInfo() const;
 
    private:
 
     int fEvtNum;
-    double fFWHM;
 
     double fTrueEventEnergy;
     double fRecEventEnergy;
 
 
-    ClassDef(AEventHeader,1);
+    ClassDef(BEventHeader,1);
     
   };
 

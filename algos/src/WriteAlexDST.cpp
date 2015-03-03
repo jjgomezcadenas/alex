@@ -1,4 +1,5 @@
 #include "WriteAlexDST.hh"
+#include <alex/LogUtil.h>
 #include <alex/ISvc.h>
 #include <alex/AEvent.h>
 
@@ -63,6 +64,8 @@ namespace alex {
 
     fAevent->SetRecEventEnergy(
       ISvc::Instance().GetRecEventEnergy());
+
+    fAevent->SetEnergyResolution(ISvc::Instance().ResolutionFWHM());
 
     
     klog << log4cpp::Priority::DEBUG 

@@ -13,10 +13,25 @@
     <name>MagBox_Xe_10atm_00tesla.Xe136_bb0nu.histos.alex.root</name>
   </HistoFile>
   <Events>
-    <runMax>10</runMax>
+    <runMax>1000</runMax>
     <runDebug>10</runDebug>
   </Events>
   <Debug>
     <level>DEBUG</level>
   </Debug>
+    <Param>
+    <name>pEnergyResolutionFWHM</name>
+    <dataType>double</dataType>
+    <value>0.005</value>
+  </Param>
+  <Param>
+    <name>pEventStart</name>
+    <dataType>int</dataType>
+    <value>0</value>
+  </Param>
+  <Param>
+    <name>pEventEnd</name>
+    <dataType>int</dataType>
+    <value>-1</value>
+  </Param>
 </AlexConfig>

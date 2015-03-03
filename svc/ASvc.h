@@ -8,7 +8,7 @@
 
 
 #include <alex/GDefs.h>
- #include <alex/TDefs.h>
+#include <alex/TDefs.h>
 #include <alex/SingletonTemplate.h>
 
 
@@ -33,15 +33,15 @@ class AlexService {
     int GetStartEvent() const { return fStartEvt; }
 
 		void LoadEvent(const alex::AEvent* evt);
-		void ClearEvent() ;
-		//const AEvent& GetEventConst() {return *fEvt;} const 
-		AEvent& GetAEvent() {return *fEvt;}  
-
+		//void ClearEvent() ;
+		const AEvent& GetEvent() const  {return *fEvt;} 
+		//AEvent& GetAEvent() {return *fEvt;}  
 
 	private:
 	  std::string fDebugLevel;
 	  int fStartEvt;
-	  AEvent* fEvt;
+
+	  const AEvent* fEvt;
 	
 	};
 

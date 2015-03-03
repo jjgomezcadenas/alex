@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ReadAlexDST>
+  <Debug>
+    <level>DEBUG</level>
+  </Debug>
+  <H1D>
+    <name>fNumberOfParticles_h1</name>
+    <title>Number of particles in event</title>
+    <nbinsx>20</nbinsx>
+    <xlow>0.0</xlow>
+    <xup>20.</xup>
+ </H1D>
+ <H1D>
+    <name>fEnergyOfParticles_h1</name>
+    <title>Energy of particles in event (MeV)</title>
+    <nbinsx>30</nbinsx>
+    <xlow>0.0</xlow>
+    <xup>3.</xup>
+ </H1D>
+ <H1D>
+    <name>fRecEnergyOfEvent_h1</name>
+    <title>Reconstructed energy of event (MeV)</title>
+    <nbinsx>30</nbinsx>
+    <xlow>2.3</xlow>
+    <xup>2.6</xup>
+ </H1D>
+ <H1D>
+    <name>fTrueEnergyOfEvent_h1</name>
+    <title>True energy of event (MeV)</title>
+    <nbinsx>30</nbinsx>
+    <xlow>2.3</xlow>
+    <xup>2.6</xup>
+ </H1D>
+ <H1D>
+    <name>fTrackLength_h1</name>
+    <title>Track length of particles in event (mm)</title>
+    <nbinsx>50</nbinsx>
+    <xlow>0.0</xlow>
+    <xup>300.</xup>
+ </H1D>
+
+</ReadAlexDST>

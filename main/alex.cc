@@ -4,9 +4,11 @@
 
 #include <alex/Alex.h>
 #include <alex/ISvc.h>
+#include <alex/ASvc.h>
 #include <alex/GDefs.h>
 #include <alex/TDefs.h>
 #include <alex/StringOperations.h>
+#include <alex/AEvent.h>
 #include "AlexConf.hh"
 
 #include <TFile.h>
@@ -30,25 +32,31 @@ void AlexLoop();
 int main(int argc, char **argv)
 {
 
-  cout << "-----Alex: Analysis of Electrons in Xenon------" << endl;
+  cout << "-----Alex: Analysis of Electrons in Xenon-- called with args " << argc << endl;
 
   string debugLevel="DEBUG";
   string inputDst="IRENE";
   
-  stringstream ss;
+  
 
   if( argc == 2)   
   {  
+    stringstream ss;
     ss << argv[1];
     ss>>debugLevel;
   }
   else if ( argc == 3)   
   { 
-    ss << argv[1];
-    ss>>debugLevel;
-
-    ss << argv[2];
-    ss>>inputDst;
+    {
+      stringstream ss;
+      ss << argv[1];
+      ss>>debugLevel;
+    } 
+    {
+      stringstream ss;
+      ss << argv[2];
+      ss>>inputDst;
+    }
   }
   // else if ( argc == 4)   
   // { 
@@ -79,6 +87,7 @@ int main(int argc, char **argv)
     return -1;
   }
 
+
   InitLogger("alex");
   SetDebugLevel(debugLevel,"alex");
   log4cpp::Category& klog = GetLogger("alex");
@@ -89,6 +98,8 @@ int main(int argc, char **argv)
     exit(-1);
   }
   
+  klog << log4cpp::Priority::INFO << " inputDst = " << inputDst;
+
   // to display histos online
   //TApplication* theApp = new TApplication("App", &argc, argv);
 
@@ -194,7 +205,7 @@ void IreneLoop()
     if (ivt%aconf.EventsToDebug() ==0)
     {
       klog << log4cpp::Priority::INFO 
-           << "Read event " << ivt << " nb = " << nb;
+           << "IRENE::Read event " << ivt << " nb = " << nb;
     }
 
     klog << log4cpp::Priority::DEBUG 
@@ -218,5 +229,73 @@ void IreneLoop()
 void AlexLoop()
 {
   
+  log4cpp::Category& klog = GetLogger("alex");
+  alex::AEvent* ievt = new alex::AEvent();
+  auto aconf = AlexConf();
+  int evtStart = (int) aconf.pEventStart;
+  int evtEnd = (int) aconf.pEventEnd;
+
+  //init AlesSvc with the same level of debug than alex.
+  ASvc::Instance().Init(GetDebugLevel("alex"), evtStart);
+  
+  //Get path, open DST file, set Tree
+  string fp = PathFromStrings(aconf.DstPath(),aconf.DstName());
+  klog << log4cpp::Priority::INFO << "Open DST file =" << fp;
+
+  TChain fEvtTree("AEVENT");
+  fEvtTree.Add(fp.c_str());   
+  fEvtTree.SetBranchAddress("ABRANCH", &ievt);
+  
+  klog << log4cpp::Priority::INFO << "number of entries in DST = " 
+       << fEvtTree.GetEntries();
+  klog << log4cpp::Priority::INFO << "number of events required = " 
+       << aconf.EventsToRun();
+  
+  if(evtEnd < evtStart) evtEnd = std::min(aconf.EventsToRun(), 
+    (int) fEvtTree.GetEntries());
+
+  else evtEnd = std::min(evtEnd, (int) fEvtTree.GetEntries());
+  klog << log4cpp::Priority::INFO << "number of events to run  = " 
+       << (evtEnd - evtStart);
+  
+  //-----------Event loop --------
+  
+  int nb;
+  klog << log4cpp::Priority::INFO 
+       << " +++++++Start loop +++++++++++ " ;
+  
+  int nev =0;
+  int npass = 0;
+  int nfail = 0;
+  for(int ivt = evtStart; ivt < evtEnd; ivt++)
+  {
+
+    nb = fEvtTree.GetEntry(ivt);
+    ASvc::Instance().LoadEvent(ievt);
+ 
+    if (ivt%aconf.EventsToDebug() ==0)
+    {
+      klog << log4cpp::Priority::INFO 
+           << "ALEX::Read event " << ivt << " nb = " << nb;
+      klog << log4cpp::Priority::INFO 
+       << " Print ALEX tree " ; 
+      fEvtTree.Print();
+    }
+
+    klog << log4cpp::Priority::DEBUG 
+         << " Executing algos  " ;
+
+    nev++;
+    bool test = alex::Alex::Instance().ExecuteAlgorithms();
+    if (test == true)
+      npass++;
+    else
+      nfail++;
+    
+  }
+
+  klog << log4cpp::Priority::INFO  << "Read " << nev << " events" ;
+  klog << log4cpp::Priority::INFO  << "Passed selection =" 
+       << npass << " Failed selection =" << nfail ;
 
 }

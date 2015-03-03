@@ -35,7 +35,7 @@ namespace alex {
     log4cpp::Category& klog = GetLogger("Asvc");
     klog << log4cpp::Priority::INFO << "AlexService Initialized" ;
 
-    fEvt= new AEvent();
+    //fEvt= new AEvent();
     
   }
 
@@ -57,18 +57,20 @@ namespace alex {
     log4cpp::Category& klog = GetLogger("Asvc");
     klog << log4cpp::Priority::DEBUG << "***** AlexManager::Load Event ";
 
-    ClearEvent();
-    fEvt = new AEvent(*ievt); 
+    //ClearEvent();
+    //fEvt = new AEvent(*ievt);
+    fEvt = ievt; 
   }
 
-//--------------------------------------------------------------------
-  void AlexService::ClearEvent()
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("Asvc");
-    klog << log4cpp::Priority::DEBUG << "***** AlexManager::Clear Event ";
 
-    delete fEvt ; 
+// //--------------------------------------------------------------------
+//   void AlexService::ClearEvent()
+// //--------------------------------------------------------------------
+//   {
+//     log4cpp::Category& klog = GetLogger("Asvc");
+//     klog << log4cpp::Priority::DEBUG << "***** AlexManager::Clear Event ";
+
+//     delete fEvt ; 
     
-  }
+//   }
 }
