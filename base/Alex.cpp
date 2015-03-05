@@ -23,15 +23,21 @@ namespace alex {
 
 
 //--------------------------------------------------------------------
-  void AlexManager::Init(string debugLevel)
+  void AlexManager::Init()
+//--------------------------------------------------------------------
+  {
+    fAlexConfigData = new AlexConfigData();
+  }
+//--------------------------------------------------------------------
+  void AlexManager::SetLevelDebug(string debugLevel)
 //--------------------------------------------------------------------
   {
     InitLogger("Alex");
     SetDebugLevel(debugLevel,"Alex");
-    fDebugLevel = debugLevel;
-
     log4cpp::Category& klog = GetLogger("Alex");
     klog << log4cpp::Priority::DEBUG << " Alex::Init() " ;
+    
+    fDebugLevel = debugLevel;
 
   }
 //--------------------------------------------------------------------
@@ -82,6 +88,41 @@ namespace alex {
   {
     for (auto& kv : fIData) 
     delete kv.second ;
+  }
+//--------------------------------------------------------------------
+  string AlexManager::PrintConfigData()
+//--------------------------------------------------------------------
+  {
+    std::stringstream s;
+    s << std::endl;    
+   
+    s << "++++++Alex Config Data++++++\n";
+    s  << " levelDebug (l) debug level (DEBUG, INFO, WARN, etc) = " 
+         << fAlexConfigData->aLevelDebug << endl;
+    s  << " mode (m) IRENE or ALEX depending of the input DST =" 
+         << fAlexConfigData->aMode <<endl; 
+    s  << " dst (d) path to IRENE or ALEX input DST = " 
+         << fAlexConfigData->aDST <<endl;
+    s  << " histo (h) path to output histo = " 
+         << fAlexConfigData->aHisto << endl;
+    s  << " startEvent (s) initial event number = " 
+         << fAlexConfigData->aStartEvent << endl;
+    s  << " finalEvent (f) final  event number = " 
+         << fAlexConfigData->aFinalEvent << endl;
+    s  << " events to debug (d)  = " 
+         << fAlexConfigData->aEventDebug << endl;
+    s  << " pressure (p) pressure in atms = " 
+          << fAlexConfigData->aPressure << endl;
+    s  << " bfield (b) magnetic field in tesla = " 
+          << fAlexConfigData->aBField << endl;
+    s  << " energyFWHM (e) energy resolution FWHM in fraction (0.005 = 5 percent) = " 
+          << fAlexConfigData->aEnergyFWHM << endl; 
+    s  << " xySigma (x) XY sigma resolution  in mm = " 
+          << fAlexConfigData->aXYSigma << endl;
+    s  << " zSigma (z) Z sigma resolution (or sparsing) in mm = " 
+          << fAlexConfigData->aZSigma << endl; 
+
+  return s.str();
   }
 }
 

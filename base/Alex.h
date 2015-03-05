@@ -15,15 +15,17 @@
 #include <alex/SingletonTemplate.h>
 #include <alex/IAlgorithm.h>
 #include <alex/IData.h>
+ #include <alex/AlexConfigData.h>
 
 
 namespace alex {
+
 
 class AlexManager {
 	public:
 		AlexManager(){};
 		virtual ~AlexManager(){};
-		void Init(std::string debugLevel);
+		void Init();
 
 		void RegisterAlgorithm(IAlgorithm* algo );
 		void InitAlgorithms();
@@ -38,13 +40,15 @@ class AlexManager {
 		// const IData* RetrieveData(std::string name) const
 		// {return fIData[name];} 
 
-	
+		AlexConfigData& ConfigData() {return *fAlexConfigData;}
+		void SetLevelDebug(std::string debugLevel);
+		std::string PrintConfigData();
 
 	private:
 		std::vector<IAlgorithm*> fIAlgo;
 		std::map<std::string,IData*> fIData;
 		std::string fDebugLevel;
-			
+		AlexConfigData* fAlexConfigData;	
 	};
 
 	typedef SingletonTemplate<AlexManager> Alex;   // Global declaration

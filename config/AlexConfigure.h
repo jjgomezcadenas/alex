@@ -24,31 +24,18 @@ class AlexConf {
 		virtual ~AlexConf(){};
 		void Init(std::string debugLevel);
 		void ParseConfiguration(std::string configFile);
-		void ParseGalexConfiguration(std::string configFile);
 		
-		std::string WriteAConfHeader() const;
-		std::string WriteAConfCPP() const;
-		std::string WriteAlgoHeader();
-
-		std::string WriteGalexHeader() const; 
-
 		std::vector<std::string> WriteAlgoHeaders();
 		std::string WriteAlgoCPP();
 		std::string WriteRegisterAlgos() const;
 		std::string WriteRegisterAlgosHeader() const;
 		std::string WriteAlgoHeaderFile() const;
 		std::vector<std::string> AlgoNames() const {return fAlgoNames;}
-		std::string SerializeAlgoNames() const;
-		std::string SerializeAlgoPaths() const;
-		std::string SerializeAlgoParam() const;
-		std::string SerializeAlgoArray() const;
-		std::string SerializeAlgoH1D() const;
-		std::string SerializeAlgoH2D() const;
 
 	private:
-		void ParseAlgosConfiguration();
+		void ParseAlgosConfiguration(std::string xmlPath);
 		void ParseAlgos();
-		//tinyxml2::XMLElement* ParseRoot() ;
+		
 		std::pair<std::string,std::string> ParseStringPair(const tinyxml2::XMLElement* mom, 
                                              const std::pair<std::string,std::string>& tags);
 
@@ -63,18 +50,10 @@ class AlexConf {
 		tinyxml2::XMLDocument fDoc;
 
 		std::pair<std::string,std::string> fStags;
-		std::pair<std::string,std::string> fAlgosPathName;
-		std::pair<std::string,std::string> fDstPathName;
-		std::pair<std::string,std::string> fHistoPathName;
-		std::pair<int,int> fEvents;
-		std::string fDebug;
-		std::map<std::string, double > fAlexNumberParam;
-		std::map<std::string, std::string > fAlexStringParam;
-
+	
 		std::vector<std::string> fAlgoNames;
     std::vector<std::string> fAlgoPath;
 
-    std::vector<alex::DParam> fGalexParam;
 
     std::map<std::string, std::string > fAlgoDebug;
     std::map<std::string, std::vector<alex::DParam> > fAlgoParam;
