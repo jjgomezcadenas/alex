@@ -30,7 +30,6 @@ namespace alex {
     klog << log4cpp::Priority::DEBUG << " Create Tree " ;
 
     fAevtTree = new TTree("AEVENT","Alex event tree");
-    TTree::SetBranchStyle(1);
 
     klog << log4cpp::Priority::DEBUG << " Set Branch to event " ;
 

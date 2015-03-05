@@ -19,6 +19,11 @@
 #pragma link C++ class alex::ABase+;
 #pragma link C++ class alex::AParticle+;
 #pragma link C++ class std::vector <alex::AParticle>+;
+#pragma link C++ class alex::AHit+;
+#pragma link C++ class alex::ABTrack+;
+#pragma link C++ class alex::ATTrack+;
+#pragma link C++ class std::pair<AHit,AHit>;
+
 
 
 #endif
