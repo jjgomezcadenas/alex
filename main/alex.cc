@@ -76,6 +76,8 @@ int main(int argc, char **argv)
   string histoPath = Alex::Instance().ConfigData().aHisto;
 
   TFile* fHistoFile = new TFile(histoPath.c_str(),"RECREATE");
+
+  Alex::Instance().LoadHistoFile(fHistoFile);
   klog << log4cpp::Priority::INFO 
        << " Instantiate and register algos " ;
 

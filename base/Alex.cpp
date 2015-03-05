@@ -29,6 +29,12 @@ namespace alex {
     fAlexConfigData = new AlexConfigData();
   }
 //--------------------------------------------------------------------
+  void AlexManager::LoadHistoFile(TFile* histoFile)
+//--------------------------------------------------------------------
+  {
+    fHistoFile = histoFile;
+  }
+//--------------------------------------------------------------------
   void AlexManager::SetLevelDebug(string debugLevel)
 //--------------------------------------------------------------------
   {

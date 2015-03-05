@@ -15,7 +15,8 @@
 #include <alex/SingletonTemplate.h>
 #include <alex/IAlgorithm.h>
 #include <alex/IData.h>
- #include <alex/AlexConfigData.h>
+#include <alex/AlexConfigData.h>
+#include <TFile.h>
 
 
 namespace alex {
@@ -26,6 +27,7 @@ class AlexManager {
 		AlexManager(){};
 		virtual ~AlexManager(){};
 		void Init();
+		void LoadHistoFile(TFile* histoFile);
 
 		void RegisterAlgorithm(IAlgorithm* algo );
 		void InitAlgorithms();
@@ -44,11 +46,14 @@ class AlexManager {
 		void SetLevelDebug(std::string debugLevel);
 		std::string PrintConfigData();
 
+		TFile& HistoFile() {return *fHistoFile; }
+
 	private:
 		std::vector<IAlgorithm*> fIAlgo;
 		std::map<std::string,IData*> fIData;
 		std::string fDebugLevel;
-		AlexConfigData* fAlexConfigData;	
+		AlexConfigData* fAlexConfigData;
+		TFile* fHistoFile;	
 	};
 
 	typedef SingletonTemplate<AlexManager> Alex;   // Global declaration
