@@ -29,6 +29,13 @@
     <xup>3.</xup>
  </H1D>
  <H1D>
+    <name>fEnergyOfTracks_h1</name>
+    <title>Energy of tracks in event (MeV)</title>
+    <nbinsx>30</nbinsx>
+    <xlow>0.0</xlow>
+    <xup>3.</xup>
+ </H1D>
+ <H1D>
     <name>fRecEnergyOfEvent_h1</name>
     <title>Reconstructed energy of event (MeV)</title>
     <nbinsx>30</nbinsx>

@@ -10,6 +10,7 @@
 
 
 #include <alex/ISvc.h>
+#include <alex/AHit.h>
 #include <alex/LogUtil.h>
 #include <alex/VectorOperations.h>
 #include <TRandom.h>
@@ -128,6 +129,37 @@ namespace alex {
          
     }
     return aParticles;
+  }
+
+ //--------------------------------------------------------------------
+  std::vector<alex::ATTrack*> IreneManager::GetAlexTTracks()
+//--------------------------------------------------------------------
+  {
+    std::vector<alex::ATTrack*> att;
+
+    for (auto iTrack: fIreneTracks) 
+    {
+      ATTrack* track = new ATTrack();
+      auto id = iTrack->GetParticle()->GetParticleID();
+      track->SetID(id);
+      track->SetParticleID(id);
+
+      // AHits
+      const std::vector<std::pair<TLorentzVector,double> >& iHits = iTrack->GetHits();
+      for (int h=0; h<iHits.size(); h++) 
+      {
+        const std::pair<TLorentzVector,double> iHit = iHits[h];
+        AHit* aHit = new AHit();
+        aHit->SetID(h);
+        aHit->SetPosition(iHit.first.Vect());
+        aHit->SetEdep(iHit.second);
+        track->AddHit(aHit);
+        if (h==0) track->SetExtreme1(new AHit(*aHit));
+        if (h==iHits.size()-1) track->SetExtreme2(new AHit(*aHit));  
+      }
+      att.push_back(track);
+    }
+    return att;
   }
   //--------------------------------------------------------------------
   void IreneManager::GetTrueVertex()

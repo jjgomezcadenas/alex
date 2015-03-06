@@ -132,7 +132,7 @@ int main(int argc, char **argv)
     {
       {"levelDebug",    required_argument, 0,  'l' },
       {"algoConfigPath",    required_argument, 0,  'a' },
-      {"SrcDirPath",    required_argument, 0,  's' },
+      {"srcDirPath",    required_argument, 0,  's' },
       {"help",    no_argument, 0,  'H' },
       {0,         0,                 0,  0 }
     };

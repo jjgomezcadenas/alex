@@ -8,11 +8,11 @@ Gas="Xe"
 Signal="Xe136_bb0nu"
 
 
-mode="ALEX"
+mode="IRENE"
 levelDebug="DEBUG"
 
 startEvent=0 
-finalEvent=10
+finalEvent=1000
 eventsDebug=10
 pressure=10 #atm
 bfield=0 #tesla 
@@ -34,13 +34,16 @@ if __name__ == "__main__":
 
 	magfield=BF[bfield]
 	Pressure=PR[pressure]
-	
+	version="*" #wild card, to chain files
 
-	run_name=Detector+"_"+Gas+"_"+Pressure+"_"+magfield+"."+Signal 
+	run_name=Detector+"_"+Gas+"_"+Pressure+"_"+magfield+"."+Signal+version 
 	print "run_name =",run_name
 
 	alex_dst=run_name+".alex.root"
 	print "alex_dst =",alex_dst
+
+	irene_dst=run_name+".next.root"
+	print "irene_dst =",irene_dst
 
 	alex_histo=run_name+".histos.alex.root"
 	print "alex_histo =",alex_histo
@@ -48,15 +51,19 @@ if __name__ == "__main__":
 	alex_dst_path=alex_dst_dir+"/"+alex_dst
 	print "alex_dst_path =",alex_dst_path
 
+	irene_dst_path=irene_dst_dir+"/"+irene_dst
+	print "alex_dst_path =",alex_dst_path
+
 	alex_histo_path=alex_histos_dir+"/"+alex_histo
 	print "alex_histo_path =",alex_histo_path
 
 	dst=""
-	histo=""
+	histo=alex_histo_path
 
 	if mode == "ALEX":
 		dst=alex_dst_path
-		histo=alex_histo_path
+	else:
+		dst=irene_dst_path
 
 	
 	

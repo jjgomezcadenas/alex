@@ -29,11 +29,11 @@ namespace alex {
 
     klog << log4cpp::Priority::DEBUG << " Create Tree " ;
 
-    fAevtTree = new TTree("AEVENT","Alex event tree");
+    fAevtTree = new TTree("AlexEvent","Alex event tree");
 
     klog << log4cpp::Priority::DEBUG << " Set Branch to event " ;
 
-    fAevtTree->Branch("ABRANCH", "alex::AEvent",&fAevent);
+    fAevtTree->Branch("AEvent", "alex::AEvent",&fAevent);
     
     return true;
   }
@@ -45,7 +45,7 @@ namespace alex {
     
     klog << log4cpp::Priority::DEBUG << " WriteAlexDST::Execute";
     klog << log4cpp::Priority::DEBUG 
-    << " Instantiate TEvent for event number " 
+    << " Instantiate AEvent for event number " 
     << ISvc::Instance().GetEvtNum();
 
     fAevent->SetEvtNum(ISvc::Instance().GetEvtNum());
@@ -101,6 +101,22 @@ namespace alex {
     klog << log4cpp::Priority::DEBUG <<fAevent->PrintInfo();
 
 
+    // TTRacks
+    std::vector<alex::ATTrack*> aTTracks =ISvc::Instance().GetAlexTTracks();
+    klog << log4cpp::Priority::DEBUG << "-->number of aTTracks =" 
+    << aTTracks.size();
+  
+    t=0;
+    for (auto aTTrack : aTTracks) 
+    {
+      t++;
+      klog << log4cpp::Priority::DEBUG 
+           << "Adding true track " << t << " to AEvent";
+      fAevent->AddTTrack(aTTrack);
+      fEnergyOfTracks_h1->Fill(aTTrack->GetEdep());
+    }
+
+
 // Fill Tree
     
     klog << log4cpp::Priority::DEBUG 
@@ -137,7 +153,7 @@ namespace alex {
     fFile->Write();
     fFile->Close();
 
-    klog << log4cpp::Priority::DEBUG << " delete TEvent";
+    klog << log4cpp::Priority::DEBUG << " delete AEvent";
     delete fAevent;
 
     return true;

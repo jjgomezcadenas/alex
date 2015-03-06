@@ -26,6 +26,7 @@ namespace alex {
     std::string fDstName;
     TH1F* fNumberOfParticles_h1;
     TH1F* fEnergyOfParticles_h1;
+    TH1F* fEnergyOfTracks_h1;
     TH1F* fRecEnergyOfEvent_h1;
     TH1F* fTrueEnergyOfEvent_h1;
     TH1F* fTrackLength_h1;
