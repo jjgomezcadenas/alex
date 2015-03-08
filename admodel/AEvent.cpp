@@ -12,6 +12,7 @@
 
 #include <alex/AEvent.h>
 #include <alex/AParticle.h>
+#include <alex/ATTrack.h>
 #include <alex/LogUtil.h>
 #include <alex/VectorOperations.h>
 
@@ -19,24 +20,27 @@ ClassImp(alex::AEvent)
 
 namespace alex {
 
-
+//--------------------------------------------------------------------
   AEvent::AEvent() : AEventHeader()
+//--------------------------------------------------------------------
   { 
   	fDebugLevel = "DEBUG"; 
     InitLogger("AEvent");
     SetDebugLevel(fDebugLevel,"AEvent");
   }
-
+//--------------------------------------------------------------------
   AEvent::AEvent(int evtNumber,
                  double trueEventEnergy, double recEventEnergy)
+//--------------------------------------------------------------------
   {
     AEventHeader(evtNumber,trueEventEnergy,recEventEnergy);
     fDebugLevel = "DEBUG"; 
     InitLogger("AEvent");
     SetDebugLevel(fDebugLevel,"AEvent");
   }
-
+//--------------------------------------------------------------------
   AEvent::AEvent(const AEvent& aev)
+//--------------------------------------------------------------------
   {
     AEventHeader(aev.GetEvtNum(),aev.GetTrueEventEnergy(),aev.GetRecEventEnergy());
     // SetTrueEventEnergy(aev.GetTrueEventEnergy());
@@ -51,30 +55,56 @@ namespace alex {
     }
     
   }
+//--------------------------------------------------------------------
   AEvent::~AEvent() 
+//--------------------------------------------------------------------
   {
   	ClearEvent();
   }
 
+//--------------------------------------------------------------------
   void AEvent::SetLevelDebug(std::string debugLevel)
+//--------------------------------------------------------------------
   {
 
     fDebugLevel = debugLevel;
     SetDebugLevel(fDebugLevel,"AEvent");  
   }
 
+//--------------------------------------------------------------------
   void AEvent::AddParticle(AParticle* apart)
+//--------------------------------------------------------------------
   {
     fParticles.push_back(apart);
   }
 
-  void AEvent::ClearEvent()
+//--------------------------------------------------------------------
+  void AEvent::AddTTrack(ATTrack* ttrack)
+//--------------------------------------------------------------------
   {
-    VDelete(fParticles); 
-    fParticles.clear();
+
+    fTTracks.push_back(ttrack);
   }
 
+//--------------------------------------------------------------------
+  void AEvent::ClearEvent()
+//--------------------------------------------------------------------
+  {
+    log4cpp::Category& klog = GetLogger("AEvent");
+    klog << log4cpp::Priority::DEBUG << " AEvent::ClearEvent() " ;
+
+    klog << log4cpp::Priority::DEBUG << " Deleting particles " ;
+    VDelete(fParticles); 
+    fParticles.clear();
+
+    klog << log4cpp::Priority::DEBUG << " Deleting tracks " ;
+    VDelete(fTTracks); 
+    fTTracks.clear();
+  }
+
+//--------------------------------------------------------------------
   std::string AEvent::PrintInfo() const
+//--------------------------------------------------------------------
   { 
     std::stringstream s;
     s << " Event number " << GetEvtNum() << std::endl;
@@ -84,6 +114,9 @@ namespace alex {
     s << " +++list of particles+++++ " << std::endl;
 
     for (auto particle : GetParticles()) 
+      s << particle->PrintInfo() << std::endl;
+
+    for (auto particle : GetTTracks()) 
       s << particle->PrintInfo() << std::endl;
 
     return s.str();

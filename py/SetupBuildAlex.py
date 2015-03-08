@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	cond_mkdir(bin_dir)
 
 	base_dir=build_dir+"/base"
-	command="ln -sf "+base_dir+"/libabase*.* "+lib_dir+"/."
+	command="ln -sf "+base_dir+"/libabase.so "+lib_dir+"/."
 	os.system(command)
 
 	admodel_dir=build_dir+"/admodel"
@@ -26,11 +26,11 @@ if __name__ == "__main__":
 	os.system(command)
 
 	svc_dir=build_dir+"/svc"
-	command="ln -sf "+svc_dir+"/libasvc*.* "+lib_dir+"/."
+	command="ln -sf "+svc_dir+"/libasvc.so "+lib_dir+"/."
 	os.system(command)
 
 	algos_dir=build_dir+"/algos/src"
-	command="ln -sf "+algos_dir+"/libaalgos*.* "+lib_dir+"/."
+	command="ln -sf "+algos_dir+"/libaalgos.so "+lib_dir+"/."
 	os.system(command)
 
 	config_dir=build_dir+"/config"

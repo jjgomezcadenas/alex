@@ -16,7 +16,7 @@ ROOT_LINKER_LIBRARY(aconf ${config_src}
 #---ROOT_EXECUTABLE( <name> source1 source2 ... LIBRARIES library1 library2 ...)
 #------------------------------------------------------------------------------------------
 
-ROOT_EXECUTABLE(xConfigure ${xconfigure_src} LIBRARIES aconf ${BASE_LIB} 
+ROOT_EXECUTABLE(xConfigure ${xconfigure_src} LIBRARIES ${CONFIG_LIB} ${BASE_LIB} 
                     ${LOG4CPP_LIBRARIES} ${TINYXML2_LIBRARIES}) 
 
 # ADD_LIBRARY(irene SHARED ${irene_src} ${IRENE_DICTIONARY})

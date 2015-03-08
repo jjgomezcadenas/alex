@@ -31,141 +31,83 @@ namespace alex {
 //--------------------------------------------------------------------
   {
     InitLogger("AlexConfigure");
-    fDebug = debugLevel;
-    SetDebugLevel(fDebug,"AlexConfigure");
+    SetDebugLevel(debugLevel,"AlexConfigure");
     log4cpp::Category& klog = GetLogger("AlexConfigure");
     klog << log4cpp::Priority::DEBUG << " AlexConf::Init() " ;
-
-    fStags.first = "path";
+    fStags.first ="path";
     fStags.second="name";
+
 
   }
 //--------------------------------------------------------------------
-  void AlexConf::ParseConfiguration(std::string configFile)
+  void AlexConf::ParseConfiguration(string pathToAlgoConfig)
 //--------------------------------------------------------------------
   {
     log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " AlexConf::ParseConfiguration() " ;
-    
-    klog << log4cpp::Priority::DEBUG << " config file =" << configFile;
 
-    fDoc.LoadFile( configFile.c_str() );
+    klog << log4cpp::Priority::DEBUG << " AlexConf::ParseConfiguration() " ;
+    klog << log4cpp::Priority::DEBUG << " ParseAlgosConfiguration file =" 
+          << pathToAlgoConfig;
+   
+    ParseAlgosConfiguration(pathToAlgoConfig);
+
+    klog << log4cpp::Priority::DEBUG << " ParseAlgos" ;
+    ParseAlgos();
+
+  }
+//--------------------------------------------------------------------
+  void AlexConf::ParseAlgosConfiguration(string xmlPath)
+//--------------------------------------------------------------------
+  {
+    log4cpp::Category& klog = GetLogger("AlexConfigure");
+    klog << log4cpp::Priority::DEBUG << " ParseAlgosConfiguration() " ;
+    
+    klog << log4cpp::Priority::DEBUG << " Opening file ="
+         << xmlPath;
+    
+    //tinyxml2::XMLDocument doc;
+
+    fDoc.LoadFile( xmlPath.c_str() );
     if (fDoc.ErrorID()!=0) 
     {
       klog << log4cpp::Priority::ERROR 
-      << "ParseConfiguration::Failed loading config file error = " 
+      << "ParseAlgosConfiguration::Failed loading config file error = " 
       << fDoc.ErrorID();
       exit (EXIT_FAILURE);
     }
 
     XMLElement* rootElement = fDoc.RootElement();
-    klog << log4cpp::Priority::DEBUG << " rootElement=" << rootElement->Name();
     string rootName = rootElement->Name();
 
-    if (rootName !="AlexConfig")
+    if (rootName !="AlgoConfig")
     {
       klog << log4cpp::Priority::ERROR 
-      << "ParseConfiguration::expected root name AlexConfig, found=" 
+      << "ParseConfiguration::expected root name AlgoConfig, found = " 
       << rootName;
       exit (EXIT_FAILURE);
     }
 
-    const XMLElement* debugElement = rootElement->FirstChildElement ("Debug") ;
-  
-    const XMLElement* elem = debugElement->FirstChildElement ("level") ;
-    fDebug  = elem->GetText();
-    klog << log4cpp::Priority::DEBUG << " debug level set in xml to = " << fDebug;
-
-    SetDebugLevel(fDebug,"AlexConfigure");
-
-
-    const XMLElement* algoElement = rootElement->FirstChildElement ("Algos") ;
-    fAlgosPathName =  ParseStringPair(algoElement,fStags);
-
-    klog << log4cpp::Priority::DEBUG << " fAlgosPathName.first=" << fAlgosPathName.first;
-
-    const XMLElement* dstElement = rootElement->FirstChildElement ("DST") ;
-    fDstPathName =  ParseStringPair(dstElement,fStags);
-    klog << log4cpp::Priority::DEBUG << " DstPathName = " << fDstPathName.first ;
-
-    const XMLElement* histoElement = rootElement->FirstChildElement ("HistoFile") ;
-    fHistoPathName =  ParseStringPair(histoElement,fStags);
-    klog << log4cpp::Priority::DEBUG << " fHistoPathName = " << fHistoPathName.first;
-
-    const XMLElement* eventElement = rootElement->FirstChildElement ("Events") ;
-
-    std::pair<std::string,std::string> tags;
-    tags.first = "runMax";
-    tags.second="runDebug";
-    fEvents =  ParseIntPair(eventElement,tags);
-
-  
-    //Parse Alex Params
-      const XMLElement* param = rootElement->FirstChildElement ("Param") ;
-      if (param != NULL)
-      {
-
-        DParam par = ParseParamElement(param);
-        klog << log4cpp::Priority::DEBUG << " found Alex config param = " << param;
-        
-        if(par.DataType()=="string")
-          fAlexStringParam[par.Name()] = par.Value();
-        else
-          fAlexNumberParam[par.Name()] = par.GetValueAsDouble();
-
-        param = param->NextSiblingElement ("Param") ;
-        
-        while (param != NULL)
-        {
-          DParam par = ParseParamElement(param);
-          klog << log4cpp::Priority::DEBUG << " found Alex config param = " << param;
-          if(par.DataType()=="string")
-          fAlexStringParam[par.Name()] = par.Value();
-        else
-          fAlexNumberParam[par.Name()] = par.GetValueAsDouble();
-
-          param = param->NextSiblingElement ("Param") ;
-        }
-      }
-
-
-    ParseAlgosConfiguration();
-    ParseAlgos();
-
-  }
-
-//--------------------------------------------------------------------
-  void AlexConf::ParseGalexConfiguration(std::string configFile)
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " ParseGalexConfiguration() " ;
-    klog << log4cpp::Priority::DEBUG << " Galex config file =" << configFile;
-
-    fDoc.LoadFile( configFile.c_str() );
-    if (fDoc.ErrorID()!=0) 
-    {
-      klog << log4cpp::Priority::ERROR 
-      << "ParseConfiguration::Failed loading config file error = " 
-      << fDoc.ErrorID();
-      exit (EXIT_FAILURE);
-    }
-
-    XMLElement* rootElement = fDoc.RootElement();
-    klog << log4cpp::Priority::DEBUG << " rootElement=" << rootElement->Name();
+    const XMLElement* algoElement = rootElement->FirstChildElement ("Algo") ;
     
-    const XMLElement* param = rootElement->FirstChildElement ("Param") ;
-      
-    if (param != NULL)
+    if (algoElement != NULL)
     {
-      DParam par = ParseParamElement(param);
-      fGalexParam.push_back(par);
-      param = param->NextSiblingElement ("Param") ;
-      while (param != NULL)
+      pair<string,string> algoPathName = ParseStringPair(algoElement,fStags);
+      string algoPath = PathFromStrings(algoPathName.first,algoPathName.second);
+      klog << log4cpp::Priority::DEBUG << " algoPath " << algoPath;
+      fAlgoNames.push_back(algoPathName.second);
+      algoPath = MergeStrings(algoPath,".xml");
+      fAlgoPath.push_back(algoPath);
+
+      const XMLElement*  nextAlgo = algoElement->NextSiblingElement ("Algo") ;
+
+      while (nextAlgo != NULL)
       {
-        DParam par = ParseParamElement(param);
-        fGalexParam.push_back(par);
-        param = param->NextSiblingElement ("Param") ;
+        algoPathName = ParseStringPair(nextAlgo,fStags);
+        algoPath = PathFromStrings(algoPathName.first,algoPathName.second);
+        algoPath = MergeStrings(algoPath,".xml");
+        fAlgoNames.push_back(algoPathName.second);
+        fAlgoPath.push_back(algoPath);
+        nextAlgo = nextAlgo->NextSiblingElement ("Algo") ;
       }
     }
   }
@@ -176,13 +118,18 @@ namespace alex {
     log4cpp::Category& klog = GetLogger("AlexConfigure");
     klog << log4cpp::Priority::DEBUG << " ParseAlgos() " ;
 
+    klog << log4cpp::Priority::DEBUG << " Number of algos registered = " 
+    << fAlgoNames.size();
+    
     for (auto i=0; i < fAlgoNames.size(); ++i)
     {
-      auto algoPath = fAlgoPath[i];
-      auto algoName = fAlgoNames[i];
-      //vector<DParam> paramVector;
+      string algoPath = fAlgoPath[i];
+      string algoName = fAlgoNames[i];
+      
+      klog << log4cpp::Priority::DEBUG << " for algo number = " << i;
+      klog << log4cpp::Priority::DEBUG << " algoPath =" << algoPath;
+      klog << log4cpp::Priority::DEBUG << " algoName =" << algoName;
 
-      klog << log4cpp::Priority::DEBUG << " algoPath = " << algoPath;
       fDoc.LoadFile( algoPath.c_str() );
       if (fDoc.ErrorID()!=0) 
       {
@@ -194,14 +141,15 @@ namespace alex {
       XMLElement* rootElement = fDoc.RootElement(); 
 
       //Parse Debug
+      klog << log4cpp::Priority::DEBUG << "++Parse Debug+++ " ;
       const XMLElement* debugElement = rootElement->FirstChildElement ("Debug") ;
       const XMLElement* elem = debugElement->FirstChildElement ("level") ;
       std::string debug = elem->GetText();
-      klog << log4cpp::Priority::DEBUG << " debug = " << debug;
+      
       fAlgoDebug[algoName]=debug;
-
-
+      
       //Parse Param
+       klog << log4cpp::Priority::DEBUG << "++Parse Param+++ " ;
       const XMLElement* param = rootElement->FirstChildElement ("Param") ;
       if (param != NULL)
       {
@@ -271,376 +219,7 @@ namespace alex {
       }
     }
   }
-//--------------------------------------------------------------------
-  void AlexConf::ParseAlgosConfiguration()
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " ParseAlgosConfiguration() " ;
-    string xmlPath = PathFromStrings(fAlgosPathName.first,fAlgosPathName.second);
 
-    klog << log4cpp::Priority::DEBUG << "ParseAlgosConfiguration:: xmlPath="
-         << xmlPath;
-    
-    //tinyxml2::XMLDocument doc;
-    fDoc.LoadFile( xmlPath.c_str() );
-    if (fDoc.ErrorID()!=0) 
-    {
-      klog << log4cpp::Priority::ERROR 
-      << "ParseAlgosConfiguration::Failed loading config file error = " 
-      << fDoc.ErrorID();
-      exit (EXIT_FAILURE);
-    }
-
-    XMLElement* rootElement = fDoc.RootElement();
-    string rootName = rootElement->Name();
-
-    if (rootName !="AlgoConfig")
-    {
-      klog << log4cpp::Priority::ERROR 
-      << "ParseConfiguration::expected root name AlexConfig, found = " 
-      << rootName;
-      exit (EXIT_FAILURE);
-    }
-
-    const XMLElement* algoElement = rootElement->FirstChildElement ("Algo") ;
-    
-    if (algoElement != NULL)
-    {
-      pair<string,string> algoPathName = ParseStringPair(algoElement,fStags);
-      string algoPath = PathFromStrings(algoPathName.first,algoPathName.second);
-      klog << log4cpp::Priority::DEBUG << " algoPath " << algoPath;
-      fAlgoNames.push_back(algoPathName.second);
-      algoPath = MergeStrings(algoPath,".xml");
-      fAlgoPath.push_back(algoPath);
-
-      const XMLElement*  nextAlgo = algoElement->NextSiblingElement ("Algo") ;
-
-      while (nextAlgo != NULL)
-      {
-        algoPathName = ParseStringPair(nextAlgo,fStags);
-        algoPath = PathFromStrings(algoPathName.first,algoPathName.second);
-        algoPath = MergeStrings(algoPath,".xml");
-        fAlgoNames.push_back(algoPathName.second);
-        fAlgoPath.push_back(algoPath);
-        nextAlgo = nextAlgo->NextSiblingElement ("Algo") ;
-      }
-    }
-  }
-
-//--------------------------------------------------------------------
-  std::string AlexConf::SerializeAlgoNames() const
-//--------------------------------------------------------------------
-  {
-    return SerializeVectorInList(fAlgoNames);
-  }
-//--------------------------------------------------------------------
-  std::string AlexConf::SerializeAlgoPaths() const
-//--------------------------------------------------------------------
-  {
-    return SerializeVectorInList(fAlgoPath);
-  }
-//--------------------------------------------------------------------
-  std::string AlexConf::SerializeAlgoParam() const
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " SerializeAlgoParam() " ;
-    
-    
-    ostringstream s;
-    s << std::endl;
-    
-    for (auto& kv : fAlgoParam) 
-    {
-      string algoName = kv.first;
-      klog << log4cpp::Priority::DEBUG << " algo name " << algoName;
-      s << "Algo: =" << algoName << endl;
-      
-      std::vector<alex::DParam> vparam = kv.second;
-      for (auto param : vparam)
-      {
-        klog << log4cpp::Priority::DEBUG << " ++Param++ ";
-        klog << log4cpp::Priority::DEBUG <<param.Serialize();
-
-        s << param.Serialize() << endl; 
-      }
-    }
-    //s<< std::ends;
-    return s.str();
-  }
-
-//--------------------------------------------------------------------
-  std::string AlexConf::SerializeAlgoArray() const
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " SerializeAlgoArray() " ;
-    
-    ostringstream s;
-    s << std::endl;
-    
-    for (auto& kv : fAlgoArray) 
-    {
-      string algoName = kv.first;
-      klog << log4cpp::Priority::DEBUG << " algo name " << algoName;
-      s << "Algo: =" << algoName << endl;
-      
-      std::vector<alex::DArray> vparam = kv.second;
-      for (auto param : vparam)
-      {
-        klog << log4cpp::Priority::DEBUG << " ++Array++ ";
-        klog << log4cpp::Priority::DEBUG <<param.Serialize();
-
-        s << param.Serialize() << endl; 
-      }
-    }
-    //s<< std::ends;
-    return s.str();
-  }
-
-//--------------------------------------------------------------------
-  std::string AlexConf::SerializeAlgoH1D() const
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " SerializeAlgoH1D() " ;
-    
-    ostringstream s;
-    s << std::endl;
-    
-    for (auto& kv : fAlgoH1D) 
-    {
-      string algoName = kv.first;
-      klog << log4cpp::Priority::DEBUG << " algo name " << algoName;
-      s << "Algo: =" << algoName << endl;
-      
-      std::vector<alex::DH1> vparam = kv.second;
-      for (auto param : vparam)
-      {
-        klog << log4cpp::Priority::DEBUG << " ++H1D++ ";
-        klog << log4cpp::Priority::DEBUG <<param.Serialize();
-
-        s << param.Serialize() << endl; 
-      }
-    }
-    //s<< std::ends;
-    return s.str();
-  }
-//--------------------------------------------------------------------
-  std::string AlexConf::SerializeAlgoH2D() const
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " SerializeAlgoH2D() " ;
-    
-    ostringstream s;
-    s << std::endl;
-    
-    for (auto& kv : fAlgoH2D) 
-    {
-      string algoName = kv.first;
-      klog << log4cpp::Priority::DEBUG << " algo name " << algoName;
-      s << "Algo: =" << algoName << endl;
-      
-      std::vector<alex::DH2> vparam = kv.second;
-      for (auto param : vparam)
-      {
-        klog << log4cpp::Priority::DEBUG << " ++H2D++ ";
-        klog << log4cpp::Priority::DEBUG <<param.Serialize();
-
-        s << param.Serialize() << endl; 
-      }
-    }
-    //s<< std::ends;
-    return s.str();
-  }
-//--------------------------------------------------------------------
-  std::string AlexConf::WriteAConfHeader() const
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " WriteAConfHeader() " ;
-    ostringstream s;
-
-    s<<"\n#ifndef AACONF_" << endl;
-    s<<"#define AACONF_" << endl;
-    s<<"// Generated by AlexConf: do not edit" << endl;
-
-    s<<"#include <string>" << endl;
-    s<<"#include <vector>" << endl;
-    s<<"#include <utility>" << endl;
-    s<<"#include <memory>" << endl;
-    s<<"#include <map>" << endl;
-
-    s<<"namespace alex {" << endl;
-
-    s<<"  class AlexConf {" << endl;
-    s<<"    public:" << endl;
-    s<<"      AlexConf();" << endl;
-    s<<"      virtual ~AlexConf(){};" << endl;
-    s<<"      void RegisterAlgos();" << endl;
-    s<<"      std::string AlgosPath() const {return fAlgoPathName.first;}" << endl;
-    s<<"      std::string AlgosName() const {return fAlgoPathName.second;}" << endl;
-    s<<"      std::string DstPath() const {return fDstPathName.first;}" << endl;
-    s<<"      std::string DstName() const {return fDstPathName.second;}" << endl;
-    s<<"      std::string HistoPath() const {return fHistoPathName.first;}" << endl;
-    s<<"      std::string HistoName() const {return fHistoPathName.second;}" << endl;
-    s<<"      int EventsToRun()const {return fEvents.first;}" << endl;
-    s<<"      int EventsToDebug()const {return fEvents.second;}" << endl;
-    s<<"      std::string DebugLevel()const {return fDebug;}" << endl;
-    s<<"    private:" << endl;
-    
-    s<<"      std::pair<std::string,std::string> fAlgoPathName;" << endl;
-    s<<"      std::pair<std::string,std::string> fDstPathName;" << endl;
-    s<<"      std::pair<std::string,std::string> fHistoPathName;" << endl;
-    s<<"      std::pair<int,int> fEvents;" << endl;
-    s<<"      std::string fDebug;" << endl;
-
-    s<<"    public:" << endl;
-    for (std::map<std::string,std::string>::const_iterator 
-          it=fAlexStringParam.begin(); 
-          it!=fAlexStringParam.end(); ++it)
-      {
-        s << "      std::string " << it->first << std::endl;
-      }
-
-    for (std::map<std::string,double>::const_iterator 
-          it=fAlexNumberParam.begin(); 
-          it!=fAlexNumberParam.end(); ++it)
-      {
-        s << "      double " << it->first << ";" << std::endl;
-      }
-
-
-    s<<"  };" << endl;
-    s<<"}" << endl;
-    s<<"#endif" << endl;
-    //s << std::ends;
-    return s.str();
-  }
-
-//--------------------------------------------------------------------
-  std::string AlexConf::WriteAConfCPP() const
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " WriteAConfCPP() " ;
-
-    ostringstream s;
-    s<<"\n// Generated by AlexConf: do not edit" << endl;
-    s<<"#include " << '"' << "AlexConf.hh" << '"' <<endl;
-    s<<"#include <alex/Alex.h>" <<endl;
-    s<<"#include <alex/LogUtil.h>" <<endl;
-    //s<<"using namespace alex ;" << endl;
-    s<<"alex::AlexConf::AlexConf()" << endl;
-    s<<"{" << endl;
-    s<<"  fAlgoPathName.first=" << '"'<<fAlgosPathName.first << '"' <<";" <<endl;
-    s<<"  fAlgoPathName.second=" << '"'<< fAlgosPathName.second << '"' <<";" <<endl;
-    s<<"  fDstPathName.first=" << '"'<<fDstPathName.first << '"' <<";" <<endl;
-    s<<"  fDstPathName.second=" << '"'<< fDstPathName.second << '"' <<";" <<endl;
-    s<<"  fHistoPathName.first=" << '"'<< fHistoPathName.first << '"' <<";" <<endl;
-    s<<"  fHistoPathName.second=" << '"'<< fHistoPathName.second << '"' <<";" <<endl;
-    s<<"  fEvents.first=" << fEvents.first <<";" <<endl;
-    s<<"  fEvents.second=" << fEvents.second <<";" <<endl;
-    s<<"  fDebug=" << '"'<< fDebug << '"' <<";" <<endl;
-
-    for (std::map<std::string,std::string>::const_iterator 
-          it=fAlexStringParam.begin(); 
-          it!=fAlexStringParam.end(); ++it)
-      {
-        s << it->first << " = " << it->second << std::endl;
-      }
-
-    for (std::map<std::string,double>::const_iterator 
-          it=fAlexNumberParam.begin(); 
-          it!=fAlexNumberParam.end(); ++it)
-      {
-        s << "  " << it->first << " = " << it->second << ";" << std::endl;
-      }
-    s<<"}" << endl;
-    
-    //s << std::ends;
-    return s.str();
-  }
-//--------------------------------------------------------------------
-  std::string AlexConf::WriteAlgoHeader()
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " WriteAlgoHeader() " ;
-    ostringstream s;
-
-    s<<"\n#ifndef ALGOHEAD_" << endl;
-    s<<"#define ALGOHEAD_" << endl;
-    s<<"// Generated by AlexConf: do not edit" << endl;
-
-    s<<"#include <string>" << endl;
-    s<<"#include <vector>" << endl;
-    s<<"#include <utility>" << endl;
-    s<<"#include <memory>" << endl;
-    s<<"#include <map>" << endl;
-    s<<"#include <TF1.h>" << endl;
-    s<<"#include <TF2.h>" << endl;
-    s<<"#include <alex/IAlgorithm.h>" << endl;
-
-    s<<"namespace alex {" << endl;
-
-    
-    for (auto algoName : fAlgoNames) 
-    {
-      
-      s << "  class " << algoName << ": public IAlgorithm {" << endl;
-      s << "  public:" << endl;
-      s << "    bool Init() ;"<< endl;
-      s << "    bool Execute() ;"<< endl;
-      s << "    bool End() ;"<< endl;
-      s << "    std::string  Name() const {return fName;}"<< endl;
-      s << "    void SetName(std::string name) {fName = name;}"<< endl;
-      s << "    void SetLevelDebug(std::string debugLevel) {fDebugLevel = debugLevel; SetDebugLevel(fDebugLevel,fName);}"<< endl;
-
-      s << "  private:"<< endl;
-      std::vector<alex::DParam> vparam = fAlgoParam[algoName];
-      for (auto param : vparam)
-      {
-        if(param.DataType()=="double")
-          s << "    double "<< param.Name() << ";" <<endl;
-        else if(param.DataType()=="int")
-          s << "    int "<< param.Name() << ";" <<endl;
-        else
-          s << "    std::string "<< param.Name() << ";" <<endl;
-      }
-
-      std::vector<alex::DArray> varray = fAlgoArray[algoName];
-      for (auto array : varray)
-      {
-        if(array.DataType()=="double")
-          s << "    std::vector<double> "<< array.Name() << ";" <<endl;
-        else if(array.DataType()=="int")
-          s << "    std::vector<int> "<< array.Name() << ";" <<endl;
-        else
-          s << "    std::vector<std::string> "<< array.Name() << ";" <<endl;
-      }
-      std::vector<alex::DH1> vh1 = fAlgoH1D[algoName];
-      for (auto h1 : vh1)
-      {
-        s << "    TF1* "<< h1.Name() << ";" <<endl;
-      }
-
-      std::vector<alex::DH2> vh2 = fAlgoH2D[algoName];
-      for (auto h2 : vh2)
-      {
-        s << "    TF2* "<< h2.Name() << ";" <<endl;
-      }
-
-      s << "  };"<< endl;
-    }
-    s << "}"<< endl;
-    s << "#endif "<< endl;
-    
-    //s << std::ends;
-    return s.str();
-  }
 
 //--------------------------------------------------------------------
   vector<string> AlexConf::WriteAlgoHeaders()
@@ -729,6 +308,9 @@ namespace alex {
 
     s<<"// Generated by AlexConf: do not edit" << endl;
     s<<"#include <alex/LogUtil.h>" <<endl;
+    s<<"#include <alex/Alex.h>" <<endl;
+    s<<"#include <TFile.h>" <<endl;
+
     for (auto algoName : fAlgoNames) 
     {
       s<<"#include "<< '"'<<algoName<<".hh"<< '"'<< endl;
@@ -744,6 +326,8 @@ namespace alex {
       s << "   fDebug =" << '"'<<fAlgoDebug[algoName] << '"' << ";" << endl;
       s << "   InitLogger(fName);" << endl;
       s << "   SetDebugLevel(fDebug,fName);" << endl;
+      s << "   TDirectory* adir = Alex::Instance().HistoFile().mkdir(fName.c_str());" 
+                << endl;
     
       std::vector<alex::DParam> vparam = fAlgoParam[algoName];
       for (auto param : vparam)
@@ -769,6 +353,7 @@ namespace alex {
           h1.Nbinsx() <<"," <<
           h1.Xlow() <<"," <<
           h1.Xup() << ");" << endl;
+        s << "    "<< h1.Name() << "->SetDirectory(adir);" <<endl; 
       }
 
       std::vector<alex::DH2> vh2 = fAlgoH2D[algoName];
@@ -782,6 +367,7 @@ namespace alex {
           h2.Nbinsy() <<"," <<
           h2.Ylow() <<"," <<
           h2.Yup()  << ");" << endl;
+        s << "    "<< h2.Name() << "->SetDirectory(adir);" <<endl;
       }
       
       s << "  }" << endl;
@@ -790,38 +376,6 @@ namespace alex {
     //s << std::ends;
     return s.str();
   }
-
-//--------------------------------------------------------------------
-  std::string AlexConf::WriteGalexHeader() const
-//--------------------------------------------------------------------
-  {
-    log4cpp::Category& klog = GetLogger("AlexConfigure");
-    klog << log4cpp::Priority::DEBUG << " WriteGalexHeader() " ;
-    ostringstream s;
-
-    s<<"\n#ifndef GALEXHEAD_" << endl;
-    s<<"#define GALEXHEAD_" << endl;
-    s<<"// Generated by AlexConf: do not edit" << endl;
-
-    s<<"#include <string>" << endl;
-    s<<"#include <vector>" << endl;
-    
-    s << "  void GalexMF::InitGalex() {" << endl;
-
-    for (auto param : fGalexParam)
-    {
-      if(param.DataType()=="string")
-        s << "   "<< param.Name() << " = " <<'"' <<param.Value() <<'"'<< ";" << endl;
-      else
-        s << "   "<< param.Name() << " = " <<param.Value() << ";" << endl;
-    }
-
-    s << "}"<< endl;
-    s << "#endif "<< endl;
-    
-    return s.str();
-  }
-
 
 
 //--------------------------------------------------------------------
@@ -834,15 +388,15 @@ namespace alex {
 
     s<<"// Generated by AlexConf: do not edit" << endl;
     s<<"#include <alex/Alex.h>" << endl;
-    s<<"#include " << '"' <<"AlexConf.hh"<<'"' << endl;
-    //s<<"#include "<<'"'<<"RegisterAlgosHeader.hh" <<'"' <<endl;
+    s<<"#include "<<'"'<<"RegisterAlgosHeader.hh"<<'"' << endl;
+    
     for (auto algoName : fAlgoNames) 
     {
       s<<"#include " <<'"' <<algoName<<".hh" <<'"'<< endl;
     }
 
     //s<<"using namespace alex ;" << endl;
-    s<<"void alex::AlexConf::RegisterAlgos()" << endl;
+    s<<"void alex::RegisterAlgos()" << endl;
     s<<"{" << endl;
     for (auto algoName : fAlgoNames) 
       {
@@ -850,7 +404,7 @@ namespace alex {
         s<<"  Alex::Instance().RegisterAlgorithm(algo_"<<algoName<<");"<<endl;
       }
     s<<" }" << endl;
-    //s<<"}" << endl;
+  
     return s.str();
   }
 

@@ -1,0 +1,17 @@
+# Find irene
+# --------------------------------
+#MESSAGE("DBG Find Irene package")
+
+
+SET(IRENE_INSTALL_DIR $ENV{INSTALL}) 
+
+IF (IRENE_INSTALL_DIR)
+  MESSAGE(STATUS "Findirene.cmake: IRENE_INSTALL_DIR variable points to ${IRENE_INSTALL_DIR}")
+ELSE(IRENE_INSTALL_DIR)
+      MESSAGE(FATAL_ERROR "Findirene.cmake: IRENE_INSTALL_DIR not defined. Please set it")
+ENDIF(IRENE_INSTALL_DIR)
+
+SET(IRENE_LIB_DIR ${IRENE_INSTALL_DIR}/lib)
+SET(IRENE_INCLUDE_DIR ${IRENE_INSTALL_DIR}/include)
+SET(IRENE_INCLUDES "-I${IRENE_INCLUDE_DIR}")
+SET(IRENE_LIBRARIES "-L${IRENE_LIB_DIR}/ -lirene") 

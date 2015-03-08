@@ -18,6 +18,7 @@
 namespace alex {
 
   class AParticle;
+  class ATTrack;
   
   /// Persistent class
   
@@ -36,8 +37,12 @@ namespace alex {
     void SetLevelDebug(std::string debugLevel);
 
     void AddParticle(AParticle* apart);
-    
     const std::vector <alex::AParticle*> GetParticles() const {return fParticles;}
+
+    // ATTracks
+    void AddTTrack(ATTrack* ttrack);
+    //alex::ATTrack* GetTTrack(int id) const;
+    const std::vector <alex::ATTrack*> GetTTracks() const {return fTTracks;}
 
     void ClearEvent();
    
@@ -49,6 +54,7 @@ namespace alex {
     std::string fDebugLevel;
 
     std::vector <alex::AParticle*> fParticles;
+    std::vector <alex::ATTrack*> fTTracks;
 
     ClassDef(AEvent,1);
     

@@ -13,6 +13,7 @@
 #include <TRandom.h>
 #include "IDefs.h"
 #include <alex/AParticle.h>
+ #include <alex/ATTrack.h>
  
 
 
@@ -46,6 +47,7 @@ class IreneManager {
 		{return fTrueHits;}
 
 		std::vector<alex::AParticle*> GetAlexParticles();
+		std::vector<alex::ATTrack*> 	GetAlexTTracks();
 
 		double GetTrueEventEnergy() const {return fTrueEventEnergy;}
     double GetRecEventEnergy() const {return fRecEventEnergy;}

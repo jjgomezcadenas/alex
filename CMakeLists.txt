@@ -121,6 +121,8 @@ SET(BASE_LIB "-L${BASE_BIN}/ -labase")
 SET(ADMODEL_LIB "-L${ADMODEL_BIN}/ -ladmodel")
 SET(SVC_LIB "-L${SVC_BIN}/ -lasvc")
 SET(ALGOS_LIB "-L${ALGOS_BIN}/src/ -laalgos") 
+SET(CONFIG_LIB "-L${CONFIG_BIN}/ -laconf")
+
 
 
 # Directories that will be searched for headers during compilation
