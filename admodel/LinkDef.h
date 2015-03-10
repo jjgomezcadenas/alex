@@ -14,6 +14,12 @@
 #pragma link off all functions;
 
 #pragma link C++ namespace alex+;
+#pragma link C++ class alex::AXRun+;
+#pragma link C++ class alex::AXEventHeader+;
+#pragma link C++ class alex::AXConfigData+;
+#pragma link C++ class alex::AXParticles+;
+#pragma link C++ class alex::AXBase+;
+#pragma link C++ class alex::AXParticle+;
 #pragma link C++ class alex::AEvent+;
 #pragma link C++ class alex::AEventHeader+;
 #pragma link C++ class alex::ABase+;
@@ -22,7 +28,7 @@
 #pragma link C++ class alex::AHit+;
 #pragma link C++ class alex::ABTrack+;
 #pragma link C++ class alex::ATTrack+;
-#pragma link C++ class std::pair<AHit,AHit>;
+#pragma link C++ class std::pair<alex::AHit,alex::AHit>;
 
 
 

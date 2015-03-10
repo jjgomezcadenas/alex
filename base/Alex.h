@@ -7,17 +7,24 @@
  JJGC, July, 2014.
 */
 
-#include <string>
-#include <vector>
-#include <utility>
-#include <memory>
-#include <map>
+#include <alex/GDefs.h>
 #include <alex/SingletonTemplate.h>
 #include <alex/IAlgorithm.h>
 #include <alex/IData.h>
-#include <alex/AlexConfigData.h>
-#include <TFile.h>
 
+#include <TROOT.h>
+#include <TFolder.h>
+#include <TFile.h>
+#include <TChain.h>
+ #include <TTree.h>
+#include <TCollection.h>
+#include <TObject.h>
+
+using std::string; 
+using std::cout; 
+using std::endl; 
+using std::ostream;
+using std::vector;
 
 namespace alex {
 
@@ -27,33 +34,38 @@ class AlexManager {
 		AlexManager(){};
 		virtual ~AlexManager(){};
 		void Init();
-		void LoadHistoFile(TFile* histoFile);
-
+		void SetHistoFile(TFile* histoFile) {fHistoFile = histoFile;}
+		void SetDstTree(TTree* tree) 
+		{
+			fTree = tree;
+		}
+		
 		void RegisterAlgorithm(IAlgorithm* algo );
 		void InitAlgorithms();
 		bool ExecuteAlgorithms();
 		void EndAlgorithms();
 		void ClearAlgorithms();
 
-		void RegisterData(std::string name, IData* data )
-		{fIData[name]=data;}
-		IData* RetrieveData(std::string name){return fIData[name]; }
+		// void RegisterData(std::string name, IData* data )
+		// {fIData[name]=data;}
+		// IData* RetrieveData(std::string name){return fIData[name]; }
 		void ClearData();
-		// const IData* RetrieveData(std::string name) const
-		// {return fIData[name];} 
-
-		AlexConfigData& ConfigData() {return *fAlexConfigData;}
+		
 		void SetLevelDebug(std::string debugLevel);
-		std::string PrintConfigData();
-
-		TFile& HistoFile() {return *fHistoFile; }
+		
+		TFile& GetHistoFile() {return *fHistoFile; }
+		TTree& SetDstTree() {return *fTree; }
+		
+		TFolder* GetFolder(string folderPath);
+		TObject* GetObject(string objectPath);
 
 	private:
 		std::vector<IAlgorithm*> fIAlgo;
-		std::map<std::string,IData*> fIData;
+		//std::map<std::string,IData*> fIData;
 		std::string fDebugLevel;
-		AlexConfigData* fAlexConfigData;
-		TFile* fHistoFile;	
+		TFile* fHistoFile;
+		TTree* fTree;
+
 	};
 
 	typedef SingletonTemplate<AlexManager> Alex;   // Global declaration

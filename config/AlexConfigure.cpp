@@ -326,8 +326,12 @@ namespace alex {
       s << "   fDebug =" << '"'<<fAlgoDebug[algoName] << '"' << ";" << endl;
       s << "   InitLogger(fName);" << endl;
       s << "   SetDebugLevel(fDebug,fName);" << endl;
-      s << "   TDirectory* adir = Alex::Instance().HistoFile().mkdir(fName.c_str());" 
-                << endl;
+      s <<  "  TFile* histoFile = (TFile*) Alex::Instance().GetObject("
+        <<     '"'<<"/FAlex/FHisto/HistoFile"<< '"' <<");" << endl;
+   //TDirectory* adir = Alex::Instance().HistoFile().mkdir(fName.c_str());
+      s <<  "  TDirectory* adir = histoFile->mkdir(fName.c_str());" << endl;
+      //s << "   TDirectory* adir = Alex::Instance().HistoFile().mkdir(fName.c_str());" 
+      //          << endl;
     
       std::vector<alex::DParam> vparam = fAlgoParam[algoName];
       for (auto param : vparam)

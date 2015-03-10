@@ -9,8 +9,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef ABASE_
-#define ABASE_
+#ifndef AXBASE_
+#define AXBASE_
 
 #include <alex/TDefs.h>
 #include <alex/GDefs.h>
@@ -19,15 +19,15 @@
 
 namespace alex {
 
-  class ABase : public TNamed   {
+  class AXBase : public TNamed   {
     
   public:
 
     // Constructors
-    ABase(){};
+    AXBase(){};
     
     // Destructor
-    virtual ~ABase(){};
+    virtual ~AXBase(){};
 
     // ID
     int GetID() const
@@ -35,13 +35,6 @@ namespace alex {
 
     void SetID(int id)
     {fId = id;}
-
-    // ID
-    std::string GetDebug() const
-    {return fDebug;}
-
-    void SetDebug(std::string debug)
-    {fDebug = debug;}
 
     // Properties
     std::map <std::string, std::string> GetProperties() const
@@ -70,9 +63,8 @@ namespace alex {
     int fId; // Unique identification number
     std::map <std::string, std::string> fProperties; // Properties if needed 
     std::map <std::string, double> fParam; // Properties if needed 
-    std::string fDebug;
     
-    ClassDef(ABase,1);
+    ClassDef(AXBase,1);
 
   };
 

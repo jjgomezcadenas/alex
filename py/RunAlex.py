@@ -12,13 +12,14 @@ mode="IRENE"
 levelDebug="DEBUG"
 
 startEvent=0 
-finalEvent=1000
+finalEvent=100
 eventsDebug=10
 pressure=10 #atm
 bfield=0 #tesla 
 energyFWHM=0.005 
 xySigma=1 #mm
 zSigma=1 #mm 
+emin=10 #keV 
 
 
 if __name__ == "__main__":
@@ -70,7 +71,7 @@ if __name__ == "__main__":
 	command1="bin/xAlex --levelDebug %s --mode %s --dst %s --histo %s "%(levelDebug,mode,dst,histo)
 	command2=" --startEvent %d --finalEvent %d --eventsDebug %d "%(startEvent,finalEvent,eventsDebug)
 	command3=" --pressure %d --bfield %d --energyFWHM %f"%(pressure,bfield,energyFWHM)
-	command4=" --xySigma %d --zSigma %d"%(xySigma,zSigma)
+	command4=" --xySigma %d --zSigma %d --emin %d"%(xySigma,zSigma,emin)
 
 	command=command1+command2+command3+command4
 	print command
